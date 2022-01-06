@@ -44,7 +44,7 @@
                         </ul>
 
                         <ul class="apps-menu-sidebar-items" v-if="activeGroup">
-                            <AppHeaderMenuItem v-for="module in activeGroup" :module="module" :cfg="{}" v-if="module.module != cfg.module" :key="module.module" />
+                            <AppHeaderMenuItem v-for="module in activeGroup.filter(e => e.module != cfg.module)" :module="module" :cfg="{}" :key="module.module" />
                         </ul>
                     </div>
 
