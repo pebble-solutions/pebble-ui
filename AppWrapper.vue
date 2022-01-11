@@ -15,7 +15,7 @@
 -->
 
 <template>
-    <div class="row no-gutters bg-dark sticky-top text-light align-items-center border-bottom border-secondary" id="app-header" style="z-index: 1025;">
+    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" id="app-header" style="z-index: 1025;">
         <AppHeaderMenu
             :cfg="cfg"
             :structures="structures"
@@ -47,28 +47,29 @@
         </div>
     </div>
 
-    <div class="row no-gutters">
+    <div class="row g-0">
         <div class="col-3 border-right overflow-auto scrollbar sidebar-full-height sticky-top" :class="{'bg-dark text-light': menu, 'bg-light': !menu}" id="app-list" :style="'padding-left:'+paddingLeft+';'" v-if="slots.menu || slots.list">
             <slot name="menu" v-if="menu && slots.menu"></slot>
             <slot name="list" v-else-if="!menu && slots.list"></slot>
         </div>
 
-        <slot name="core" v-if="slots.core"></slot>
+        <div class="col" v-if="slots.core">
+            <slot name="core"></slot>
+        </div>
     </div>
 </template>
 
 <script>
 
-import AppHeaderMenu from 'AppHeaderMenu.vue'
-import AppHeaderUserMenu from 'AppHeaderUserMenu.vue'
+import AppHeaderMenu from './AppHeaderMenu.vue'
+import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 
 /**
  * Application wrapper component
  *
  * @param {Object} cfg
- * @param {Array} structures
- * @param {Object} sessLogin
  * @param {Object} cfgMenu
+ * @param {Object} cfgSlots
  *
  * @event menu-toggle {Boolean}
  * @event config-module {Void}
@@ -172,7 +173,8 @@ export default {
             this.slots[key] = this.cfgSlots[key];
         }
 
-        query = {
+        /*
+        let query = {
             login:'self'
         };
 
@@ -208,6 +210,7 @@ export default {
                 self.pending.sessLogin = false;
             }
         });
+        */
 
     }
 }

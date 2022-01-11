@@ -91,8 +91,8 @@
 
 <script>
 
-import AppHeaderMenuItem from 'AppHeaderMenuItem.vue'
-import AppHeaderUserMenu from 'AppHeaderUserMenu.vue'
+import AppHeaderMenuItem from './AppHeaderMenuItem.vue'
+import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 
 /**
  * Header menu component
@@ -230,7 +230,7 @@ export default {
         unactiveModulesGroups() {
             let groups = {};
 
-            for (groupName in this.modulesGroups) {
+            for (const groupName in this.modulesGroups) {
                 if (groupName !== this.activeGroupName) {
                     groups[groupName] = this.modulesGroups[groupName];
                 }
@@ -302,7 +302,7 @@ export default {
             // La boucle suivante masque les items de modules si ils ne contiennent pas 
             // le mot clé.
             for (const key in this.modules) {
-                m = this.modules[key];
+                let m = this.modules[key];
 
                 if (m.name.match(reg) || m.module.match(reg)) {
                     m.search_result = true;
@@ -345,7 +345,7 @@ export default {
         }
     },
     mounted() {
-
+        /*
         MKGGet.queue.push({
             url: '/api/mkg/GET/modules',
             self:this,
@@ -363,7 +363,7 @@ export default {
                 self.pending.modules = false;
             }
         });
-
+        */
     }
 }
 </script>
