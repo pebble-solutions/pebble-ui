@@ -21,6 +21,7 @@
             :structures="structures"
             :sess-login="sessLogin"
             :cfg-menu="cfgMenu"
+            :active-structure="activeStructure"
 
             @menu-toggle="menu = !menu"
             @config-module="$emit('config-menu')"
@@ -37,6 +38,7 @@
                 <AppHeaderUserMenu
                     :structures="structures"
                     :sess-login="sessLogin"
+                    :active-structure="activeStructure"
                     :cfg-menu="cfgMenu"
 
                     @config-module="$emit('config-menu')"
@@ -63,6 +65,7 @@
 
 import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
+import {mapGetters, mapState} from 'vuex'
 
 /**
  * Application wrapper component
@@ -90,8 +93,6 @@ export default {
                 structures: true,
                 sessLogin: true
             },
-            structures: null,
-            sessLogin: null,
             menu: false,
             slots: {
                 menu: true,
@@ -163,8 +164,16 @@ export default {
             else {
                 return '0px';
             }
-        }
+        },
         // EO paddingLeft()
+
+
+        /**
+         * mapState()
+         * Récupère les éléments stockés au niveau du store de vuex
+         */
+        ...mapState(['structures', 'sessLogin']),
+        ...mapGetters(['activeStructure'])
     },
     
     mounted() {

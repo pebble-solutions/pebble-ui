@@ -27,6 +27,7 @@
                         :structures="structures" 
                         :sess-login="sessLogin" 
                         :cfg-menu="cfgMenu"
+                        :active-structure="activeStructure"
                         v-on:config-module="$emit('config-module')"
                         v-if="appsLauncher" />
                 </div>
@@ -56,7 +57,7 @@
                                 <h4>{{groupName}}</h4>
 
                                 <ul class="apps-menu-sidebar-items horizontal">
-                                    <menu-item v-for="module in modulesLs" :module="module" :cfg="{}" :key="module.module"></menu-item>
+                                    <AppHeaderMenuItem v-for="module in modulesLs" :module="module" :cfg="{}" :key="module.module" />
                                 </ul>
                             </div>
                         </div>
@@ -101,6 +102,7 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
  * @param {Array} structures
  * @param {Object} sessLogin
  * @param {Object} cfgMenu
+ * @param {Object} activeStructure
  * 
  * @event {Boolean} menu-toggle
  * @event {Void} config-module
@@ -110,7 +112,8 @@ export default {
         cfg: Object,
         structures: Array,
         sessLogin: Object,
-        cfgMenu: Object
+        cfgMenu: Object,
+        activeStructure: Object
     },
 
     data() {

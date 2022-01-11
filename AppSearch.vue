@@ -18,7 +18,8 @@
     <div>
         <form method="post" class="p-2 border-bottom bg-light sticky-top d-flex" :action="action" @submit.prevent="searchElements()">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Rechercher" v-model="search.keyword">
+                <!-- v-model ne semble pas tolérer de modifier search.keyword qui hérite d'une propriété -->
+                <!--<input type="text" class="form-control" placeholder="Rechercher" v-model="search.keyword">-->
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">
                         <i class="fas fa-search"></i>
@@ -94,7 +95,7 @@ export default {
         hasSearchFilter() {
             let i = 0;
 
-            for (key in this.search) {
+            for (let key in this.search) {
                 if (this.search[key] && key != 'keyword') {
                     i += 1;
                 }

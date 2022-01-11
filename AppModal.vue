@@ -88,17 +88,18 @@ export default {
     },
     
     mounted() {
-        let self = this;
+        //let self = this;
 
         // Lors de la fermeture du modal, on vérifié que la barre d'adresse est actualisée
-        $('#'+this.id+'Modal').on('hidden.bs.modal', function (event) {
+        // Ce code doit être revu, jQuery n'est pas importé
+        /*$('#'+this.id+'Modal').on('hidden.bs.modal', function (event) {
             if (self.$root.openedElement) {
                 document.location.hash = '#!'+self.$root.appName+'/'+self.$root.openedElement.id
             }
             else {
                 document.location.hash = '#!'+self.$root.appName;
             }
-        });
+        });*/
     }
 }
 
