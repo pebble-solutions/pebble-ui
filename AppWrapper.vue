@@ -30,7 +30,7 @@
 
         <div class="col d-flex align-items-center justify-content-between">
             <div>
-                <slot name="header" v-if="slots.header"></slot>
+                <slot name="header" v-if="slots.header">Valeur par défaut</slot>
             </div>
 
             <!-- Barre d'outil ITCloud -->
