@@ -1,21 +1,21 @@
 <template>
-    <div class="col-3 border-right border-secondary d-flex align-items-center">
-        <a class="apps-menu-btn mr-3" href="#!" title="Retour" v-if="cfg.appMode == 'standalone'" @click.prevent="closeWindow()">
+    <div class="col-3 border-end border-secondary d-flex align-items-center">
+        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.appMode == 'standalone'" @click.prevent="closeWindow()" :style="varStyle">
             <i class="apps-menu-icon apps-menu-icon-back"></i>
         </a>
-        <a class="apps-menu-btn mr-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else>
+        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" :style="varStyle" v-else>
             <i class="apps-menu-icon apps-menu-icon-apps"></i>
         </a>
         <span class="navbar-brand text-light" v-if="cfg.appMode == 'standalone'">
             {{cfg.moduleLabel}}
         </span>
         <a href="#!" class="navbar-brand text-light" @click.prevent="menu = !menu" v-else title="Menu application">
-            <i class="fas fa-times mr-1" style="width:22px; text-align: center;" v-if="menu"></i>
-            <i class="fas fa-bars mr-1" style="width:22px; text-align: center;" v-else></i>
+            <i class="bi bi-x-lg me-1" style="width:22px; text-align: center;" v-if="menu"></i>
+            <i class="bi bi-list me-1" style="width:22px; text-align: center;" v-else></i>
             {{cfg.moduleLabel}}
         </a>
 
-        <div class="apps-menu-sidebar" :class="{active : appsLauncher}" v-if="aside || cfg.appMode != 'standalone'">
+        <div class="apps-menu-sidebar" :class="{active : appsLauncher}" v-if="cfg.aside">
             <div v-if="!pending.modules && modules && cfg.appMode != 'standalone'">
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -34,7 +34,7 @@
 
                 <div class="row no-gutters mt-1">
 
-                    <div :class="{'col-3 border-right apps-menu-border sticky-top': appsLauncher}">
+                    <div :class="{'col-3 border-end apps-menu-border sticky-top': appsLauncher}">
                         <div class="px-3" v-if="appsLauncher">
                             <h3>Recommandées</h3>
                             <div>Dans la même catégorie que {{activeGroupName}}</div>
@@ -49,7 +49,7 @@
                         </ul>
                     </div>
 
-                    <div class="col-3 border-right apps-menu-border" v-if="appsLauncher">
+                    <div class="col-3 border-end apps-menu-border" v-if="appsLauncher">
                         <div class="px-3">
                             <h3>Autres applications</h3>
 
@@ -84,11 +84,16 @@
             </div>
 
             <div class="apps-menu-sidebar-logo">
-                <img src="/mkg/images/pebble-text-v-white.png" class="img-fluid" alt="Pebble">
+                <img src="@/components/pebble-ui/assets/pebble-text-v-white.png" class="img-fluid" alt="Pebble">
             </div>
         </div>
     </div>
 </template>
+
+<style scoped lang="scss">
+
+
+</style>
 
 <script>
 
@@ -103,6 +108,7 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
  * @param {Object} sessLogin
  * @param {Object} cfgMenu
  * @param {Object} activeStructure
+ * @param {Object} mkg
  * 
  * @event {Boolean} menu-toggle
  * @event {Void} config-module
@@ -113,7 +119,8 @@ export default {
         structures: Array,
         sessLogin: Object,
         cfgMenu: Object,
-        activeStructure: Object
+        activeStructure: Object,
+        mkg: Object
     },
 
     data() {
@@ -268,8 +275,19 @@ export default {
                 return true;
             }
             return false;
-        }
+        },
         // EO aside
+
+
+        /**
+         * Retourne les variables de style pour l'application
+         * @return {Object}
+         */
+        varStyle() {
+            return {
+                '--theme-color': this.mkg.config.THEME_COLOR
+            };
+        }
 
 
     },

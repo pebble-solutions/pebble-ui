@@ -13,8 +13,8 @@
     - default                   Contenu du libellé
 -->
 <template>
-    <router-link :to="href" v-slot="{href, navigate}" custom>
-        <a :href="href" @click="navigate" class="list-group-item list-group-item-action" :class="{'active': active, 'bg-dark': !active && look == 'dark', 'text-light' : look == 'dark'}">
+    <router-link :to="href" v-slot="{href, navigate, isActive}" custom>
+        <a :href="href" @click="navigate" class="list-group-item list-group-item-action" :class="{'active': isActive, 'bg-dark border-secondary': !isActive && look == 'dark', 'text-light' : look == 'dark'}">
             <i class="me-2" :class="icon" style="width:16px; text-align:center;" v-if="icon"></i>
             <slot></slot>
         </a>
