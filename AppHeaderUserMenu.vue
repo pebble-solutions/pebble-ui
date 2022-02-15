@@ -23,7 +23,7 @@
             </div>
         </li>
         <li class="nav-item dropdown">
-            <a href="{RACINE_VERSION}modules/espace/private/php/menu_profile.php" title="{sess_login}" class="d-block text-light" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <a href="{RACINE_VERSION}modules/espace/private/php/menu_profile.php" title="{sess_login}" class="d-block text-light" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" v-if="sessLogin">
                 <span class="d-block" :style="'background-image:url('+sessLogin.oAvatar.url_root+');background-size:cover;background-position:center; width:32px; height:32px; border-radius:50%;'" v-if="sessLogin.oAvatar"></span>
                 <span class="text-center d-block" :style="'line-height: 32px; min-width: 32px; min-height: 32px; background-color:'+sessLogin.login.toColor()+'; width:32px; height:32px; border-radius: 50%; color: white;'" v-else>
                     {{sessLogin.login[0].toUpperCase()}}

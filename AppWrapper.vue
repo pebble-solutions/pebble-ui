@@ -15,7 +15,7 @@
 -->
 
 <template>
-    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" id="app-header" style="z-index: 1025;">
+    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !sessLogin || !structures}" id="app-header" style="z-index: 1025;">
         <AppHeaderMenu
             :cfg="cfg"
             :structures="structures"
@@ -25,9 +25,7 @@
             :mkg="mkg"
 
             @menu-toggle="menu = !menu"
-            @config-module="$emit('config-menu')"
-
-            v-if="structures && sessLogin" />
+            @config-module="$emit('config-menu')" />
 
         <div class="col d-flex align-items-center justify-content-between">
             <div>
@@ -42,15 +40,13 @@
                     :active-structure="activeStructure"
                     :cfg-menu="cfgMenu"
 
-                    @config-module="$emit('config-menu')"
-
-                    v-if="structures && sessLogin" />
+                    @config-module="$emit('config-menu')" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
         </div>
     </div>
 
-    <div class="row g-0">
+    <div class="row g-0" :class="{'filter-blur' : !sessLogin || !structures}">
         <div class="col-3 border-end overflow-auto scrollbar sidebar-full-height sticky-top" :class="{'bg-dark text-light': menu, 'bg-light': !menu}" id="app-list" :style="'padding-left:'+paddingLeft+';'" v-if="slots.menu || slots.list">
             <slot name="menu" v-if="menu && slots.menu"></slot>
             <slot name="list" v-else-if="!menu && slots.list"></slot>
@@ -67,14 +63,18 @@
             </div>
         </div>
     </div>
+
+    <LoginModal v-if="!sessLogin" :display="true" />
 </template>
 
 <script>
 
 import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
+import LoginModal from './LoginModal.vue'
 import {mapGetters, mapState} from 'vuex'
 import axios from 'axios'
+import * as bootstrap from "bootstrap";
 
 /**
  * Application wrapper component
@@ -115,7 +115,8 @@ export default {
     components: {
         // Chargement des dépenses externes
         AppHeaderMenu,
-        AppHeaderUserMenu
+        AppHeaderUserMenu,
+        LoginModal
     },
 
     watch: {
@@ -240,6 +241,10 @@ export default {
         window.addEventListener('resize', () => {
             this.resize();
         });
+
+        let modal = document.getElementById('loginModal');
+        let btModal = new bootstrap.Modal(modal);
+        btModal.show();
 
         /*
         let query = {
@@ -515,5 +520,10 @@ export default {
 .dropzone-dark:hover {
 	background-color:rgb(70,70,70);
 	border-color: rgb(40,40,40);
+}
+
+.filter-blur {
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
 }
 </style>
