@@ -13,7 +13,7 @@
 
 <template>
     <ul class="nav align-items-center">
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown" v-if="activeStructure">
             <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sitemap"></i> {{activeStructure.nom_interne}}</a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a :href="'/mkg/private/php/structure_switch.php?structure_id='+structure.id" class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in structures" :key="structure.id">
@@ -22,8 +22,8 @@
                 </a>
             </div>
         </li>
-        <li class="nav-item dropdown">
-            <a href="{RACINE_VERSION}modules/espace/private/php/menu_profile.php" title="{sess_login}" class="d-block text-light" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" v-if="sessLogin">
+        <li class="nav-item dropdown" v-if="sessLogin">
+            <a href="{RACINE_VERSION}modules/espace/private/php/menu_profile.php" title="{sess_login}" class="d-block text-light" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <span class="d-block" :style="'background-image:url('+sessLogin.oAvatar.url_root+');background-size:cover;background-position:center; width:32px; height:32px; border-radius:50%;'" v-if="sessLogin.oAvatar"></span>
                 <span class="text-center d-block" :style="'line-height: 32px; min-width: 32px; min-height: 32px; background-color:'+sessLogin.login.toColor()+'; width:32px; height:32px; border-radius: 50%; color: white;'" v-else>
                     {{sessLogin.login[0].toUpperCase()}}
