@@ -47,6 +47,8 @@
 
 <script>
 
+import * as bootstrap from "bootstrap"
+
 export default {
     props: {
         display: Boolean
@@ -59,7 +61,8 @@ export default {
             pending: {
                 auth: false
             },
-            error: null
+            error: null,
+            modal: null
         }
     },
 
@@ -84,14 +87,8 @@ export default {
             this.$app.login(this, this.username, this.password)
             .then((resp) => {
                 this.error = null;
-                console.log(resp);
-                this.$store.commit('login' , resp.data.oLogin);
-
-                return this.$app.listStructures();
-            })
-            .then((resp) => {
-                this.error = null;
-                this.$store.commit('structures', resp.data);
+                this.modal.hide();
+                this.$emit('auth-change', resp);
             })
             .catch((error) => {
                 this.error = this.$app.catchError(error, {
@@ -118,6 +115,11 @@ export default {
                 });
             });
         }
+    },
+
+    mounted() {
+        this.modal = new bootstrap.Modal(document.getElementById('loginModal'));
+        this.modal.show();
     }
 }
 </script>

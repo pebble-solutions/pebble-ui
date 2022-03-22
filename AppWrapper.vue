@@ -15,7 +15,7 @@
 -->
 
 <template>
-    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !sessLogin || !structures}" id="app-header" style="z-index: 1025;">
+    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !local_user}" id="app-header" style="z-index: 1025;">
         <AppHeaderMenu
             :cfg="cfg"
             :structures="structures"
@@ -35,10 +35,8 @@
             <!-- Barre d'outil ITCloud -->
             <div>
                 <AppHeaderUserMenu
-                    :structures="structures"
-                    :sess-login="sessLogin"
-                    :active-structure="activeStructure"
                     :cfg-menu="cfgMenu"
+                    :local_user="local_user"
 
                     @config-module="$emit('config-menu')" />
             </div>
@@ -46,7 +44,7 @@
         </div>
     </div>
 
-    <div class="row g-0" :class="{'filter-blur' : !sessLogin || !structures}">
+    <div class="row g-0" :class="{'filter-blur' : !local_user}">
         <div class="col-3 border-end overflow-auto scrollbar sidebar-full-height sticky-top" :class="{'bg-dark text-light': menu, 'bg-light': !menu}" id="app-list" :style="'padding-left:'+paddingLeft+';'" v-if="slots.menu || slots.list">
             <slot name="menu" v-if="menu && slots.menu"></slot>
             <slot name="list" v-else-if="!menu && slots.list"></slot>
@@ -64,7 +62,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!sessLogin" :display="true" />
+    <LoginModal v-if="!local_user" @auth-change="setLocal_user" />
 </template>
 
 <script>
@@ -74,7 +72,6 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 import LoginModal from './LoginModal.vue'
 import {mapGetters, mapState} from 'vuex'
 import axios from 'axios'
-import * as bootstrap from "bootstrap";
 
 /**
  * Application wrapper component
@@ -108,7 +105,8 @@ export default {
                 list: true,
                 core: true,
                 header: true
-            }
+            },
+            local_user: null
         }
     },
 
@@ -205,6 +203,15 @@ export default {
                 aside.style.height = height+'px';
                 aside.style.top = header_height+'px';
             }
+        },
+
+        /**
+         * Met à jour l'utilisateur local
+         * @param {Object}
+         */
+        setLocal_user(user) {
+            this.local_user = user;
+            this.$emit('auth-change', user);
         }
     },
     
@@ -241,10 +248,6 @@ export default {
         window.addEventListener('resize', () => {
             this.resize();
         });
-
-        let modal = document.getElementById('loginModal');
-        let btModal = new bootstrap.Modal(modal);
-        btModal.show();
 
         /*
         let query = {
