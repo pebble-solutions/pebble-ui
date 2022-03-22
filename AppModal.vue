@@ -22,17 +22,15 @@
             <form method="post" @submit.prevent="$emit('submit')" class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" :id="id+'ModalLabel'">{{title}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <slot></slot>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()"><i class="fas fa-trash-alt"></i></button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" v-if="cancelBtn">Annuler</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" v-if="closeBtn">Fermer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="cancelBtn">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="closeBtn">Fermer</button>
                     <button type="submit" class="btn btn-primary" :disabled="pending" v-if="submitBtn">
                         <span v-if="pending">
                             <span class="spinner-border spinner-border-sm" role="status"></span>
@@ -47,6 +45,8 @@
 </template>
 
 <script>
+
+import * as bootstrap from "bootstrap"
 
 /**
  * Application modal component
@@ -72,6 +72,12 @@ export default {
         deleteBtn: Boolean,
         pending: Boolean
     },
+
+    data() {
+        return {
+            modal: null
+        }
+    },
     
     methods: {
         /**
@@ -86,20 +92,23 @@ export default {
         }
         // EO deleteData()
     },
-    
-    mounted() {
-        //let self = this;
 
-        // Lors de la fermeture du modal, on vérifié que la barre d'adresse est actualisée
-        // Ce code doit être revu, jQuery n'est pas importé
-        /*$('#'+this.id+'Modal').on('hidden.bs.modal', function (event) {
-            if (self.$root.openedElement) {
-                document.location.hash = '#!'+self.$root.appName+'/'+self.$root.openedElement.id
-            }
-            else {
-                document.location.hash = '#!'+self.$root.appName;
-            }
-        });*/
+    /**
+     * Avant de retirer le composant, la modale doit être masquée afin de supprimer 
+     * tous les éléments html créés par bootstrap
+     */
+    beforeUnmount() {
+        if (this.modal) {
+            this.modal.hide();
+        }
+    },
+    
+    /**
+     * Une fois l'élément monté, on affiche la modale.
+     */
+    mounted() {
+        this.modal = new bootstrap.Modal(document.getElementById(this.id+'Modal'));
+        this.modal.show();
     }
 }
 
