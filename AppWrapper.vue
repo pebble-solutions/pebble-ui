@@ -93,6 +93,8 @@ export default {
         cfgSlots: Object
     },
 
+    emits: ['authChange'],
+
     data() {
         return {
             pending: {

@@ -54,6 +54,8 @@ export default {
         display: Boolean
     },
 
+    emits: ['authChange'],
+
     data() {
         return {
             username: null,
