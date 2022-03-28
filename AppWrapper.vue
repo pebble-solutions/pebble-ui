@@ -38,7 +38,8 @@
                     :cfg-menu="cfgMenu"
                     :local_user="local_user"
 
-                    @config-module="$emit('config-menu')" />
+                    @config-module="$emit('config-menu')"
+                    @storage-modal="storageModal = true" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
         </div>
@@ -63,6 +64,8 @@
     </div>
 
     <LoginModal v-if="!local_user" @auth-change="setLocal_user" />
+
+    <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" />
 </template>
 
 <script>
@@ -70,6 +73,7 @@
 import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 import LoginModal from './LoginModal.vue'
+import StorageModal from './StorageModal.vue'
 import {mapGetters, mapState} from 'vuex'
 import axios from 'axios'
 
@@ -108,7 +112,8 @@ export default {
                 core: true,
                 header: true
             },
-            local_user: null
+            local_user: null,
+            storageModal: false
         }
     },
 
@@ -116,7 +121,8 @@ export default {
         // Chargement des dépenses externes
         AppHeaderMenu,
         AppHeaderUserMenu,
-        LoginModal
+        LoginModal,
+        StorageModal
     },
 
     watch: {

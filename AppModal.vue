@@ -18,7 +18,7 @@
 
 <template>
     <div class="modal fade" :id="id+'Modal'" tabindex="-1" :aria-labelledby="id+'ModalLabel'" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" :class="classList">
             <form method="post" @submit.prevent="$emit('submit')" class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" :id="id+'ModalLabel'">{{title}}</h5>
@@ -58,6 +58,7 @@ import * as bootstrap from "bootstrap"
  * @param {Boolean} submitBtn
  * @param {Boolean} deleteBtn
  * @param {Boolean} pending
+ * @param {String} size
  *
  * @event submit {void}
  * @event delete {void}
@@ -70,12 +71,60 @@ export default {
         closeBtn: Boolean,
         submitBtn: Boolean,
         deleteBtn: Boolean,
-        pending: Boolean
+        pending: Boolean,
+        display: {
+            type: Boolean,
+            default: true
+        },
+        size: {
+            type: String,
+            default: ''
+        },
+        className: {
+            type: String,
+            default: ''
+        }
     },
+
+    emits: ['modalShow', 'modalHide'],
 
     data() {
         return {
-            modal: null
+            modal: null,
+            display_status: null
+        }
+    },
+
+    computed: {
+        /**
+         * Retourne la liste des classes en fonction de la propriété size.
+         * Size peut contenir sm, lg et xl
+         * 
+         * @returns {String}
+         */
+        classList() {
+            let classList = '';
+            if (this.size) {
+                classList = 'modal-'+this.size;
+            }
+            
+            classList += ' '+this.className;
+
+            return classList;
+        }
+    },
+
+    watch: {
+        /**
+         * Le statut display est observé pour afficher ou masquer la boite modale.
+         */
+        display(val) {
+            if (val) {
+                this.modal.show();
+            }
+            else {
+                this.modal.hide();
+            }
         }
     },
     
@@ -107,8 +156,22 @@ export default {
      * Une fois l'élément monté, on affiche la modale.
      */
     mounted() {
-        this.modal = new bootstrap.Modal(document.getElementById(this.id+'Modal'));
-        this.modal.show();
+        let modalElement = document.getElementById(this.id+'Modal');
+        this.modal = new bootstrap.Modal(modalElement);
+
+        if (this.display) {
+            this.modal.show();
+        }
+
+        let self = this;
+
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            self.$emit('modal-hide');
+        });
+
+        modalElement.addEventListener('show.bs.modal', function () {
+            self.$emit('modal-show');
+        });
     }
 }
 

@@ -38,6 +38,7 @@
             <div class="dropdown-menu dropdown-menu-right">
                 <a :href="cfgMenu.href" class="dropdown-item" @click.prevent="configModule()" v-if="cfgMenu.href">Configuration du module</a>
                 <a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp">Configuration générale</a>
+                <button class="dropdown-item" @click.prevent="$emit('storage-modal')">Data viewer</button>
             </div>
         </li>
     </ul>
@@ -64,6 +65,14 @@ export default {
         local_user: Object,
         cfgMenu: Object,
         activeStructure: Object
+    },
+
+    emits: ['storageModal', 'configModule'],
+
+    data() {
+        return {
+            storageMStorageModalodal: false
+        }
     },
 
     components: {
