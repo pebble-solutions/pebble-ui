@@ -62,6 +62,8 @@ import * as bootstrap from "bootstrap"
  *
  * @event submit {void}
  * @event delete {void}
+ * @event modal-hide {void}
+ * @event modal-show {void}
  */
 export default {
     props: {
@@ -86,7 +88,7 @@ export default {
         }
     },
 
-    emits: ['modalShow', 'modalHide'],
+    emits: ['modal-show', 'modal-hide', 'submit', 'delete'],
 
     data() {
         return {

@@ -14,12 +14,12 @@
 <template>
     <ul class="nav align-items-center">
         <li class="nav-item dropdown" v-if="local_user">
-            <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sitemap"></i> {{local_user.structures[0].nom_interne}}</a>
+            <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sitemap"></i> {{activeStructure.nom_interne}}</a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a :href="'/mkg/private/php/structure_switch.php?structure_id='+structure.id" class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in local_user.structures" :key="structure.id">
+                <button class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in local_user.structures" :key="structure.id" @click.prevent="setActiveStructure(structure.id)">
                     {{structure.nom_interne}}
-                    <i v-if="structure.isCurrentSession" class="fas fa-check text-success"></i>
-                </a>
+                    <i v-if="structure.id === active_structure_id" class="bi bi-check2 text-success"></i>
+                </button>
             </div>
         </li>
         <li class="nav-item dropdown" v-if="local_user">
@@ -38,7 +38,7 @@
             <div class="dropdown-menu dropdown-menu-right">
                 <a :href="cfgMenu.href" class="dropdown-item" @click.prevent="configModule()" v-if="cfgMenu.href">Configuration du module</a>
                 <a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp">Configuration générale</a>
-                <button class="dropdown-item" @click.prevent="$emit('storage-modal')">Data viewer</button>
+                <button class="dropdown-item" @click.prevent="storageModal()">Data viewer</button>
             </div>
         </li>
     </ul>
@@ -51,39 +51,59 @@ import UserImage from './UserImage.vue'
 /**
  * Header menu component
  * 
- * @param {Array} structures
- * @param {Object} sessLogin
  * @param {Object} cfgMenu
- * @param {Object} activeStructure
+ * @param {Object} local_user
+ * @param {Number} active_structure_id
  * 
  * @event {Void} config-module
+ * @event {Void} storage-modal
+ * @event {Integer} structure-change
  */
 export default {
     props: {
-        structures: Array,
-        sessLogin: Object,
         local_user: Object,
-        cfgMenu: Object,
-        activeStructure: Object
+        active_structure_id: Number,
+        cfgMenu: Object
     },
 
-    emits: ['storageModal', 'configModule'],
-
-    data() {
-        return {
-            storageMStorageModalodal: false
-        }
-    },
+    emits: ['storage-modal', 'config-module', 'structure-change'],
 
     components: {
         UserImage
     },
+
+    computed: {
+        /**
+         * Retourne l'objet de la structure active
+         * @returns {Object}
+         */
+        activeStructure() {
+            return this.local_user.structures.find(e => e.id === this.active_structure_id);
+        }
+    },
     
     methods: {
-        // Config module
+        /**
+         * Envoie un événement 'config-module' à l'élément parent
+         */
         configModule() {
             this.$emit('config-module');
-        } // End of config module
+        },
+
+        /**
+         * Envoie un événement 'storage-modal' à l'élément parent
+         */
+        storageModal() {
+            this.$emit('storage-modal');
+        },
+
+        /**
+         * Envoie un événement pour modifier la structure
+         * @param {Interger} structureId
+         */
+        setActiveStructure(structureId) {
+            this.$emit('structure-change', structureId);
+        }
     }
 }
 </script>

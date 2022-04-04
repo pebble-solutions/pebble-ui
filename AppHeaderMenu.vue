@@ -1,9 +1,9 @@
 <template>
     <div class="col-3 border-end border-secondary d-flex align-items-center">
-        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.appMode == 'standalone'" @click.prevent="closeWindow()" :style="varStyle">
+        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.appMode == 'standalone'" @click.prevent="closeWindow()">
             <i class="apps-menu-icon apps-menu-icon-back"></i>
         </a>
-        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" :style="varStyle" v-else>
+        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else>
             <i class="apps-menu-icon apps-menu-icon-apps"></i>
         </a>
         <span class="navbar-brand text-light" v-if="cfg.appMode == 'standalone'">
@@ -104,11 +104,8 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
  * Header menu component
  * 
  * @param {Object} cfg
- * @param {Array} structures
- * @param {Object} sessLogin
  * @param {Object} cfgMenu
- * @param {Object} activeStructure
- * @param {Object} mkg
+ * @param {Object} localUser
  * 
  * @event {Boolean} menu-toggle
  * @event {Void} config-module
@@ -116,11 +113,8 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 export default {
     props: {
         cfg: Object,
-        structures: Array,
-        sessLogin: Object,
         cfgMenu: Object,
-        activeStructure: Object,
-        mkg: Object
+        local_user: Object
     },
 
     data() {
@@ -279,17 +273,6 @@ export default {
         // EO aside
 
 
-        /**
-         * Retourne les variables de style pour l'application
-         * @return {Object}
-         */
-        varStyle() {
-            return {
-                '--theme-color': this.mkg.config.THEME_COLOR
-            };
-        }
-
-
     },
 
     components: {
@@ -344,7 +327,6 @@ export default {
          * Si la recherche est vide ou si il n'y a pas de module retournée, aucune action n'est lancée.
          */
         launchFistResult() {
-
             if (this.search_keyword) {
                 let module = this.search_results.modules[0];
 
@@ -364,27 +346,6 @@ export default {
             let sidebar = document.querySelector('.apps-menu-sidebar');
             sidebar.scrollTo(0,0);
         }
-    },
-    mounted() {
-        /*
-        MKGGet.queue.push({
-            url: '/api/mkg/GET/modules',
-            self:this,
-            callback(resp, self) {
-                if (resp.status === 'OK') {
-                    self.modules = resp.data;
-                    self.$emit('modules-loaded', self.modules);
-
-                    self.search('');
-                }
-                else {
-                    alert('Erreur : '.resp.message);
-                    console.error(resp);
-                }
-                self.pending.modules = false;
-            }
-        });
-        */
     }
 }
 </script>

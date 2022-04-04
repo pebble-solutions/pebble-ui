@@ -42,7 +42,7 @@ export default {
         }
     },
 
-    emits: ['modalHide', 'modalShow'],
+    emits: ['modal-hide', 'modal-show'],
 
     data() {
         return {

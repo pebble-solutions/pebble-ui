@@ -49,12 +49,22 @@
 
 import * as bootstrap from "bootstrap"
 
+/**
+ * Ce composant affiche une boite de dialogue afin de se connecter à un compte utilisateur.
+ * Lorsque la connexion est valide, le composant renvoie l'utilisateur connecté et passe 
+ * automatiquement sur la structure par défaut de l'utilisateur.
+ * 
+ * @param {Boolean} display Affiche ou masque la boite de dialogue
+ * 
+ * @event auth-change {LocalUser}
+ * @event structure-change {Number}
+ */
 export default {
     props: {
         display: Boolean
     },
 
-    emits: ['authChange'],
+    emits: ['auth-change', 'structure-change'],
 
     data() {
         return {
@@ -90,6 +100,7 @@ export default {
             .then((resp) => {
                 this.error = null;
                 this.modal.hide();
+                this.$emit('structure-change', this.$app.active_structure_id);
                 this.$emit('auth-change', resp);
             })
             .catch((error) => {

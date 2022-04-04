@@ -10,19 +10,15 @@
     Événement emits
     - menu-toggle       Envoie le signal d'inversion du menu de l'application
     - config-module     Envoie le signal d'affichage de la boite de dialogue de configuration
-    - loaded-structures Envoie le signal de fin de chargement des structures  avec la liste des structures en argument
-    - loaded-sess-login Envoie le signal de fin de chargement du login avec le login chargé en argument
+    - auth-change       Mise à jour de l'authentification de l'utilisateur
 -->
 
 <template>
     <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !local_user}" id="app-header" style="z-index: 1025;">
         <AppHeaderMenu
             :cfg="cfg"
-            :structures="structures"
-            :sess-login="sessLogin"
             :cfg-menu="cfgMenu"
-            :active-structure="activeStructure"
-            :mkg="mkg"
+            :local_user="local_user"
 
             @menu-toggle="menu = !menu"
             @config-module="$emit('config-menu')" />
@@ -37,9 +33,11 @@
                 <AppHeaderUserMenu
                     :cfg-menu="cfgMenu"
                     :local_user="local_user"
+                    :active_structure_id="active_structure_id"
 
                     @config-module="$emit('config-menu')"
-                    @storage-modal="storageModal = true" />
+                    @storage-modal="storageModal = true"
+                    @structure-change="activateStructure" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
         </div>
@@ -63,7 +61,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user" @auth-change="setLocal_user" />
+    <LoginModal v-if="!local_user" @auth-change="setLocal_user" @structure-change="setActiveStructureId" />
 
     <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" />
 </template>
@@ -74,8 +72,6 @@ import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 import LoginModal from './LoginModal.vue'
 import StorageModal from './StorageModal.vue'
-import {mapGetters, mapState} from 'vuex'
-import axios from 'axios'
 
 /**
  * Application wrapper component
@@ -86,8 +82,7 @@ import axios from 'axios'
  *
  * @event menu-toggle {Boolean}
  * @event config-module {Void}
- * @event loaded-structures {Object}
- * @event loaded-sess-login {Object}
+ * @event auth-change {Object}
  */
 
 export default {
@@ -97,7 +92,7 @@ export default {
         cfgSlots: Object
     },
 
-    emits: ['authChange'],
+    emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change'],
 
     data() {
         return {
@@ -113,6 +108,7 @@ export default {
                 header: true
             },
             local_user: null,
+            active_structure_id: null,
             storageModal: false
         }
     },
@@ -126,34 +122,6 @@ export default {
     },
 
     watch: {
-        /**
-         * structures(val)
-         * Lors du chargement des structures, un événement est émit contenant l'objet chargé
-         *
-         * @param {Object} val
-         *
-         * @event loaded-structures {Object}
-         */
-        structures(val) {
-            this.$emit('loaded-structures', val);
-        },
-        // EO structures()
-
-
-        /**
-         * sessLogin(val)
-         * Lors du chargement du login connecté, un événement est émit contenant l'objet chargé
-         *
-         * @param {Object} val
-         *
-         * @event loaded-sess-login {Object}
-         */
-        sessLogin(val) {
-            this.$emit('loaded-sess-login', val);
-        },
-        // EO sessLogin()
-
-
         /**
          * menu(val)
          * Observe le changement d'état du menu
@@ -182,14 +150,6 @@ export default {
             }
         },
         // EO paddingLeft()
-
-
-        /**
-         * mapState()
-         * Récupère les éléments stockés au niveau du store de vuex
-         */
-        ...mapState(['structures', 'sessLogin', 'mkg']),
-        ...mapGetters(['activeStructure'])
     },
 
     methods: {
@@ -215,11 +175,29 @@ export default {
 
         /**
          * Met à jour l'utilisateur local
-         * @param {Object}
+         * @param {Object} user
          */
         setLocal_user(user) {
             this.local_user = user;
             this.$emit('auth-change', user);
+        },
+
+        /**
+         * Met à jour la structure active
+         * @param {Integer} structureId
+         */
+        setActiveStructureId(structureId) {
+            this.active_structure_id = structureId;
+            this.$emit('structure-change', structureId);
+        },
+
+        /**
+         * Demande de changer de structure
+         * @param {Integer} structureId
+         */
+        activateStructure(structureId) {
+            this.$app.setStructure(structureId);
+            this.setActiveStructureId(structureId);
         }
     },
     
@@ -229,72 +207,11 @@ export default {
             this.slots[key] = this.cfgSlots[key];
         }
 
-        let ax = axios.create({
-            baseURL: 'http://local.fe.tld/api/'
-        });
-
-        ax.get('/mkg/GET/config')
-        .then((resp) => {
-            let apiResp = resp.data;
-
-            if (apiResp.status === 'OK') {
-                this.$store.commit('mkgConfig', apiResp.data);
-            }
-            else {
-                alert(apiResp.message);
-                console.error(apiResp);
-            }
-        })
-        .catch((error) => {
-            alert(error);
-            console.error(error);
-        });
-
-
         this.resize();
 
         window.addEventListener('resize', () => {
             this.resize();
         });
-
-        /*
-        let query = {
-            login:'self'
-        };
-
-        MKGGet.queue.push({
-            url: '/api/structure/GET/list/'+JSON.stringify(query),
-            self: this,
-            callback(resp, self) {
-                if (resp.status === 'OK') {
-                    self.structures = resp.data;
-                }
-                // Erreur dans la réponse
-                else {
-                    alert('Erreur : '+resp.message);
-                    console.error(resp);
-                }
-                self.pending.structures = false;
-            }
-        });
-
-        MKGGet.queue.push({
-            url: '/api/login/GET/SESSION',
-            self: this,
-            callback(resp, self) {
-                if (resp.status === 'OK') {
-                    self.sessLogin = resp.data;
-                }
-                // Erreur dans la réponse
-                else {
-                    alert('Erreur : '+resp.message);
-                    console.error(resp);
-                }
-
-                self.pending.sessLogin = false;
-            }
-        });
-        */
 
     }
 };
