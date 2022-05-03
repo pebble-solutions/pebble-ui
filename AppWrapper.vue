@@ -18,6 +18,7 @@
         <AppHeaderMenu
             :cfg="cfg"
             :cfg-menu="cfgMenu"
+            :cfg-slots="cfgSlots"
             :local_user="local_user"
 
             @menu-toggle="menu = !menu"
@@ -32,6 +33,7 @@
             <div>
                 <AppHeaderUserMenu
                     :cfg-menu="cfgMenu"
+                    :cfg="cfg"
                     :local_user="local_user"
                     :active_structure_id="active_structure_id"
 
@@ -43,13 +45,27 @@
         </div>
     </div>
 
-    <div class="row g-0" :class="{'filter-blur' : !local_user}">
-        <div class="col-3 border-end overflow-auto scrollbar sidebar-full-height sticky-top" :class="{'bg-dark text-light': menu, 'bg-light': !menu}" id="app-list" :style="'padding-left:'+paddingLeft+';'" v-if="slots.menu || slots.list">
-            <slot name="menu" v-if="menu && slots.menu"></slot>
-            <slot name="list" v-else-if="!menu && slots.list"></slot>
+    <div class="row g-0" :class="{'filter-blur' : !local_user}" :style="'padding-left:'+paddingLeft+';'">
+        <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
+            <div class="btn-group w-100 p-1" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
+                <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
+                <label class="btn btn-outline-custom w-50" for="menuMode-menu">
+                    <i class="bi bi-three-dots-vertical"></i>
+                    Menu
+                </label>
+
+                <input type="radio" class="btn-check" name="menuMode" id="menuMode-list" autocomplete="off" v-model="menuMode" value="list">
+                <label class="btn btn-outline-custom w-50" for="menuMode-list">
+                    <i class="bi bi-list-ul"></i>
+                    Liste
+                </label>
+            </div>
+
+            <slot name="menu" v-if="menuMode == 'menu' && slots.menu && cfg.app_mode != 'standalone'"></slot>
+            <slot name="list" v-else-if="menuMode == 'list' || slots.list"></slot>
         </div>
 
-        <div class="col" v-if="slots.core">
+        <div class="col"  v-if="slots.core">
             <slot name="core"></slot>
 
             <div class="app-footer">
@@ -101,6 +117,7 @@ export default {
                 sessLogin: true
             },
             menu: false,
+            menuMode : 'menu',
             slots: {
                 menu: true,
                 list: true,
@@ -131,8 +148,9 @@ export default {
          */
         menu(val) {
             this.$emit('menu-toggle', val);
-        }
+        },
         // EO menu()
+
     },
 
     computed: {
@@ -202,9 +220,12 @@ export default {
     },
     
     mounted() {
-
         for (const key in this.cfgSlots) {
             this.slots[key] = this.cfgSlots[key];
+        }
+
+        if(!this.cfgSlots.menu && this.cfgSlots.list) {
+            this.menuMode = 'list';
         }
 
         this.resize();
@@ -231,6 +252,23 @@ export default {
 .apps-menu-btn:hover {
     background-color: darken($theme-color, 10%);
 }
+
+.btn-outline-custom {
+    color: $theme-color!important;
+    border-color: $theme-color!important;
+}
+
+.btn-outline-custom:hover {
+    color:white!important;
+    background-color: $theme-color!important;
+}
+
+.btn-check:checked+.btn-outline-custom {
+    color: white!important;
+    background-color: $theme-color!important;
+}
+
+
 
 .apps-menu-icon {
     display: inline-block;
@@ -363,6 +401,45 @@ export default {
     top:48px;
 }
 
+.pebble-aside-menu {
+    display: none;
+
+}
+
+.pebble-aside-menu.menu-opened {
+    display: block;
+    position: fixed;
+    top : 52px;
+    bottom : 0px;
+    width: 100%!important;
+    max-width: 260px;
+}
+
+.pebble-cursor-pointer {
+    cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+    .pebble-aside-menu {
+        display: block;
+        width: 350px!important;
+        flex: none!important;
+    }
+
+    .pebble-aside-menu.menu-opened {
+        display: block;
+        position: initial;
+        top: auto; 
+        bottom: auto;
+        width: 25%;
+        
+    }
+}
+
+
+/**
+*   Style des élements d'administration
+*/
 .text-admin {
     color:#a012ff;
 }
