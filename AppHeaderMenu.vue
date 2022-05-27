@@ -1,7 +1,7 @@
 <template>
     <div class="col-3 border-secondary d-flex align-items-center pebble-rod-menu" :class="{'border-end' : cfgSlots.menu || cfgSlots.list}" :style="'max-width:'+mobileMenuSize+';'">
-        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.app_mode == 'standalone'" @click.prevent="closeWindow()">
-            <i class="apps-menu-icon apps-menu-icon-back"></i>
+        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.app_mode == 'standalone' || cfg.backNavigation" @click.prevent="actionBack()">
+            <i class="bi bi-arrow-left text-white fs-5"></i>
         </a>
 
         <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else-if="cfg.app_mode != 'standalone' && cfg.ppp == 'private'">
@@ -350,6 +350,19 @@ export default {
             window.close();
         },
         // EO closeWindow()
+
+        /**
+         * Lance l'action de retour lors du clique sur la flèche retour
+         */
+        actionBack() {
+            console.log(this.cfg.backAction);
+            if (this.cfg.backAction) {
+                this.$router.push(this.cfg.backAction);
+            }
+            else {
+                this.closeWindow();
+            }
+        },
 
 
         /**
