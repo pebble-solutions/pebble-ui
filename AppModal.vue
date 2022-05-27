@@ -27,7 +27,7 @@
                 <div class="modal-body">
                     <slot></slot>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" v-if="footer">
                     <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()"><i class="fas fa-trash-alt"></i></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="cancelBtn">Annuler</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="closeBtn">Fermer</button>
@@ -59,6 +59,7 @@ import * as bootstrap from "bootstrap"
  * @param {Boolean} deleteBtn
  * @param {Boolean} pending
  * @param {String} size
+ * @param {Boolean} footer
  *
  * @event submit {void}
  * @event delete {void}
@@ -85,6 +86,10 @@ export default {
         className: {
             type: String,
             default: ''
+        },
+        footer: {
+            type: Boolean,
+            default: true
         }
     },
 
