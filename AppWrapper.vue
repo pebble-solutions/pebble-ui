@@ -185,7 +185,7 @@ export default {
 
             let height = win_height - header_height;
 
-            if (header) {
+            if (aside) {
                 aside.style.height = height+'px';
                 aside.style.top = header_height+'px';
             }

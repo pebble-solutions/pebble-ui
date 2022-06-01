@@ -30,11 +30,11 @@
                         <a href="/" class="text-secondary text-center">Mot de passe oublié</a>
                     </div>
 
-                    <hr class="border-light">
+                    <!--<hr class="border-light">
 
                     <div class="d-grid gap-2">
                         <button @click="loginProvider('google')" type="button" class="btn btn-outline-secondary btn.lg"><i class="bi bi-google"></i> Connexion avec Google</button>
-                    </div>
+                    </div>-->
 
                     <div class="text-center mt-3 pt-3 mb-2">
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
@@ -100,6 +100,9 @@ export default {
             .then((resp) => {
                 this.error = null;
                 this.modal.hide();
+
+                console.log(resp);
+
                 this.$emit('structure-change', this.$app.active_structure_id);
                 this.$emit('auth-change', resp);
             })
