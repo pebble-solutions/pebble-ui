@@ -101,8 +101,6 @@ export default {
                 this.error = null;
                 this.modal.hide();
 
-                console.log(resp);
-
                 this.$emit('structure-change', this.$app.active_structure_id);
                 this.$emit('auth-change', resp);
             })

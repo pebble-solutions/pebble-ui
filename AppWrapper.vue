@@ -234,6 +234,16 @@ export default {
             this.resize();
         });
 
+        this.$app.addEventListener('authCleared', () => {
+            this.setLocal_user(null);
+            this.setActiveStructureId(null);
+            this.$router.push('/');
+        });
+
+        this.$app.addEventListener('authRefreshed', (user) => {
+            this.setLocal_user(user);
+        });
+
     }
 };
 </script>
