@@ -1,7 +1,7 @@
 <template>
     <div class="col-3 border-secondary d-flex align-items-center pebble-rod-menu" :class="{'border-end' : cfgSlots.menu || cfgSlots.list}" :style="'max-width:'+mobileMenuSize+';'">
-        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.app_mode == 'standalone' || cfg.backNavigation" @click.prevent="actionBack()">
-            <i class="bi bi-arrow-left text-white fs-5"></i>
+        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="(cfg.app_mode == 'standalone' || cfg.backNavigation) && !navIndex" @click.prevent="actionBack()">
+            <span class="apps-menu-icon apps-menu-icon-bi"><i class="bi bi-arrow-left text-white"></i></span>
         </a>
 
         <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else-if="cfg.app_mode != 'standalone' && cfg.ppp == 'private'">
@@ -332,6 +332,20 @@ export default {
             //return '350px';
         },
         // EO paddingLeft()
+
+        /**
+         * Retourne true si la route active est l'index
+         * @returns {Boolean}
+         */
+        navIndex() {
+            if (this.cfg.backAction) {
+                if (this.cfg.backAction !== this.$route.path) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
 
     },

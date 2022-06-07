@@ -244,6 +244,16 @@ export default {
             this.setLocal_user(user);
         });
 
+        this.$app.addEventListener('authChanged', (user) => {
+            this.setLocal_user(user);
+        });
+
+        this.$app.addEventListener('structureChanged', (structureId) => {
+            this.setActiveStructureId(structureId);
+        });
+
+        this.$app.checkAuth();
+
     }
 };
 </script>
@@ -305,6 +315,11 @@ export default {
     background:#ffffff;
     mask-size:cover;
     -webkit-mask-size:cover;
+}
+
+.apps-menu-icon-bi {
+    line-height:28px;
+    text-align: center;
 }
 
 .apps-menu-sidebar {

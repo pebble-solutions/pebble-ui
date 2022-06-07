@@ -176,7 +176,7 @@ export default {
             self.$emit('modal-hide');
         });
 
-        modalElement.addEventListener('show.bs.modal', function () {
+        modalElement.addEventListener('shown.bs.modal', function () {
             self.$emit('modal-show');
         });
     }
