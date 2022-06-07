@@ -317,6 +317,11 @@ export default {
     -webkit-mask-size:cover;
 }
 
+.apps-menu-icon-bi {
+    line-height:28px;
+    text-align: center;
+}
+
 .apps-menu-sidebar {
     position:fixed; 
     left:0px; 
