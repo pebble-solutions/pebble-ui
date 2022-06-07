@@ -355,7 +355,6 @@ export default {
          * Lance l'action de retour lors du clique sur la flèche retour
          */
         actionBack() {
-            console.log(this.cfg.backAction);
             if (this.cfg.backAction) {
                 this.$router.push(this.cfg.backAction);
             }
