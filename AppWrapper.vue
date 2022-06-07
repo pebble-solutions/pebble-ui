@@ -14,7 +14,7 @@
 -->
 
 <template>
-    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !local_user}" id="app-header" style="z-index: 1025;">
+    <div class="row g-0 bg-dark sticky-top text-light align-items-center border-bottom border-secondary" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" id="app-header" style="z-index: 1025;">
         <AppHeaderMenu
             :cfg="cfg"
             :cfg-menu="cfgMenu"
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <div class="row g-0" :class="{'filter-blur' : !local_user}" :style="'padding-left:'+paddingLeft+';'">
+    <div class="row g-0" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" :style="'padding-left:'+paddingLeft+';'">
         <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
             <div class="btn-group w-100 p-1" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
                 <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
@@ -68,7 +68,7 @@
         <div class="col"  v-if="slots.core">
             <slot name="core"></slot>
 
-            <div class="app-footer">
+            <div class="app-footer" id="app-footer">
                 <div class="mb-2">
                     <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Work less, do more" alt="Pebble" style="max-width: 48px;">
                 </div>
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user" @auth-change="setLocal_user" @structure-change="setActiveStructureId" />
+    <LoginModal v-if="!local_user && cfg.ppp !== 'public'" @auth-change="setLocal_user" @structure-change="setActiveStructureId" />
 
     <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" />
 </template>
@@ -185,7 +185,7 @@ export default {
 
             let height = win_height - header_height;
 
-            if (header) {
+            if (aside) {
                 aside.style.height = height+'px';
                 aside.style.top = header_height+'px';
             }
@@ -232,6 +232,16 @@ export default {
 
         window.addEventListener('resize', () => {
             this.resize();
+        });
+
+        this.$app.addEventListener('authCleared', () => {
+            this.setLocal_user(null);
+            this.setActiveStructureId(null);
+            this.$router.push('/');
+        });
+
+        this.$app.addEventListener('authRefreshed', (user) => {
+            this.setLocal_user(user);
         });
 
     }
