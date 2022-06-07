@@ -244,6 +244,16 @@ export default {
             this.setLocal_user(user);
         });
 
+        this.$app.addEventListener('authChanged', (user) => {
+            this.setLocal_user(user);
+        });
+
+        this.$app.addEventListener('structureChanged', (structureId) => {
+            this.setActiveStructureId(structureId);
+        });
+
+        this.$app.checkAuth();
+
     }
 };
 </script>

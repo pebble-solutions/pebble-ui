@@ -29,7 +29,7 @@
             <div class="dropdown-menu dropdown-menu-right">
                 <h2 class="dropdown-header">{{local_user.login.pseudo}}</h2>
                 <a class="dropdown-item" href="/mkg/modules/espace/private/php/login_3_resume.php?login_id={sess_login_id}" target="espaceApp">Mon compte</a>
-                <a class="dropdown-item" href="/mkg/private/php/index.php?d=OUI">Déconnexion</a>
+                <a class="dropdown-item" @click.prevent="logout()" href="#!">Déconnexion</a>
 
                 <hr class="dropdown-divider" v-if="smallScreen && cfg.ppp == 'private'">
                 <h2 class="dropdown-header" v-if="smallScreen && cfg.ppp == 'private'">Structure</h2>
@@ -138,6 +138,13 @@ export default {
          */
         setActiveStructure(structureId) {
             this.$emit('structure-change', structureId);
+        },
+
+        /**
+         * Ferme la session
+         */
+        logout() {
+            this.$app.logout();
         }
     },
     mounted() {

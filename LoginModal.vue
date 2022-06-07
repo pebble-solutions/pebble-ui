@@ -30,11 +30,11 @@
                         <a href="/" class="text-secondary text-center">Mot de passe oublié</a>
                     </div>
 
-                    <!--<hr class="border-light">
+                    <hr class="border-light">
 
                     <div class="d-grid gap-2">
                         <button @click="loginProvider('google')" type="button" class="btn btn-outline-secondary btn.lg"><i class="bi bi-google"></i> Connexion avec Google</button>
-                    </div>-->
+                    </div>
 
                     <div class="text-center mt-3 pt-3 mb-2">
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
@@ -63,8 +63,6 @@ export default {
     props: {
         display: Boolean
     },
-
-    emits: ['auth-change', 'structure-change'],
 
     data() {
         return {
@@ -97,13 +95,13 @@ export default {
             this.pending.auth = true;
 
             this.$app.login(this, this.username, this.password)
-            .then((resp) => {
-                this.error = null;
-                this.modal.hide();
+            // .then((resp) => {
+            //     this.error = null;
+            //     // this.modal.hide();
 
-                this.$emit('structure-change', this.$app.active_structure_id);
-                this.$emit('auth-change', resp);
-            })
+            //     this.$emit('structure-change', this.$app.active_structure_id);
+            //     this.$emit('auth-change', resp);
+            // })
             .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: 'message'
@@ -120,9 +118,9 @@ export default {
         loginProvider(provider)
         {
             this.$app.loginProvider(provider)
-            .then((resp) => {
-                console.log(resp);
-            })
+            // .then((resp) => {
+            //     console.log(resp);
+            // })
             .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: 'message'
@@ -134,6 +132,19 @@ export default {
     mounted() {
         this.modal = new bootstrap.Modal(document.getElementById('loginModal'));
         this.modal.show();
+
+        this.$app.addEventListener('auth', () => {
+            this.pending.auth = true;
+        });
+
+        this.$app.addEventListener('authError', (error) => {
+            this.pending.auth = false;
+            this.error = error;
+        });
+    },
+
+    beforeUnmount() {
+        this.modal.hide();
     }
 }
 </script>
