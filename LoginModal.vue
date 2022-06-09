@@ -64,8 +64,6 @@ export default {
         display: Boolean
     },
 
-    emits: ['auth-change', 'structure-change'],
-
     data() {
         return {
             username: null,
@@ -97,11 +95,13 @@ export default {
             this.pending.auth = true;
 
             this.$app.login(this, this.username, this.password)
-            .then((resp) => {
-                this.error = null;
-                this.$emit('structure-change', this.$app.active_structure_id);
-                this.$emit('auth-change', resp);
-            })
+            // .then((resp) => {
+            //     this.error = null;
+            //     // this.modal.hide();
+
+            //     this.$emit('structure-change', this.$app.active_structure_id);
+            //     this.$emit('auth-change', resp);
+            // })
             .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: 'message'
@@ -118,9 +118,9 @@ export default {
         loginProvider(provider)
         {
             this.$app.loginProvider(provider)
-            .then((resp) => {
-                console.log(resp);
-            })
+            // .then((resp) => {
+            //     console.log(resp);
+            // })
             .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: 'message'
@@ -136,6 +136,19 @@ export default {
     mounted() {
         this.modal = new bootstrap.Modal(document.getElementById('loginModal'));
         this.modal.show();
+
+        this.$app.addEventListener('auth', () => {
+            this.pending.auth = true;
+        });
+
+        this.$app.addEventListener('authError', (error) => {
+            this.pending.auth = false;
+            this.error = error;
+        });
+    },
+
+    beforeUnmount() {
+        this.modal.hide();
     }
 }
 </script>

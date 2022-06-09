@@ -1,22 +1,31 @@
 <template>
-    <div class="col-3 border-end border-secondary d-flex align-items-center">
-        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="cfg.appMode == 'standalone'" @click.prevent="closeWindow()">
-            <i class="apps-menu-icon apps-menu-icon-back"></i>
+    <div class="col-3 border-secondary d-flex align-items-center pebble-rod-menu" :class="{'border-end' : cfgSlots.menu || cfgSlots.list}" :style="'max-width:'+mobileMenuSize+';'">
+        <a class="apps-menu-btn me-3" href="#!" title="Retour" v-if="(cfg.app_mode == 'standalone' || cfg.backNavigation) && !navIndex" @click.prevent="actionBack()">
+            <span class="apps-menu-icon apps-menu-icon-bi"><i class="bi bi-arrow-left text-white"></i></span>
         </a>
-        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else>
-            <i class="apps-menu-icon apps-menu-icon-apps"></i>
+
+        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else-if="cfg.app_mode != 'standalone' && cfg.ppp == 'private'">
+            <i v-if="cfg.logos" class="apps-menu-icon"><img :src="getLogo()" alt="Pebble"></i>
+            <i v-else class="apps-menu-icon apps-menu-icon-apps"></i>
         </a>
-        <span class="navbar-brand text-light" v-if="cfg.appMode == 'standalone'">
-            {{cfg.moduleLabel}}
+
+        <span class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" v-else>
+            <i v-if="cfg.logos" class="apps-menu-icon"><img :src="getLogo()" alt="Pebble"></i>
+            <i v-else class="apps-menu-icon apps-menu-icon-apps"></i>
         </span>
-        <a href="#!" class="navbar-brand text-light" @click.prevent="menu = !menu" v-else title="Menu application">
+
+
+        <a href="#!" class="navbar-brand text-light " v-if="burgerMenu" @click.prevent="menu = !menu" title="Menu application">
             <i class="bi bi-x-lg me-1" style="width:22px; text-align: center;" v-if="menu"></i>
             <i class="bi bi-list me-1" style="width:22px; text-align: center;" v-else></i>
             {{cfg.moduleLabel}}
         </a>
+        <span class="navbar-brand text-light " v-else>
+            {{cfg.moduleLabel}}
+        </span>
 
         <div class="apps-menu-sidebar" :class="{active : appsLauncher}" v-if="cfg.aside">
-            <div v-if="!pending.modules && modules && cfg.appMode != 'standalone'">
+            <div v-if="!pending.modules && modules && cfg.app_mode != 'standalone'">
 
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="navbar-brand text-light d-flex align-items-center"  v-if="appsLauncher">
@@ -33,7 +42,6 @@
                 </div>
 
                 <div class="row no-gutters mt-1">
-
                     <div :class="{'col-3 border-end apps-menu-border sticky-top': appsLauncher}">
                         <div class="px-3" v-if="appsLauncher">
                             <h3>Recommandées</h3>
@@ -91,7 +99,24 @@
 </template>
 
 <style scoped lang="scss">
+    .pebble-rod-menu {
+        width: 100%!important;
+        max-width: 350px;
+    }
 
+    .pebble-burger-menu {
+        display: block;
+    }
+
+    @media (min-width: 1024px) {
+        .pebble-rod-menu {
+            width: initial;
+        }
+
+        .pebble-burger-menu {
+            display : none;
+        }
+    }
 
 </style>
 
@@ -105,6 +130,7 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
  * 
  * @param {Object} cfg
  * @param {Object} cfgMenu
+ * @param {Object} cfgSlots
  * @param {Object} localUser
  * 
  * @event {Boolean} menu-toggle
@@ -114,6 +140,7 @@ export default {
     props: {
         cfg: Object,
         cfgMenu: Object,
+        cfgSlots: Object,
         local_user: Object
     },
 
@@ -129,10 +156,10 @@ export default {
             search_keyword: null,
             search_results: {
                 modules: []
-            }
+            },
+            winWidth : 0
         }
-    },
-    
+    },    
     watch: {
         /**
          * Contrôle l'affichage du menu
@@ -272,6 +299,54 @@ export default {
         },
         // EO aside
 
+        /**
+         * retourn true si l'ecran est inferieur a 1024px et que Menu ou List est a true
+         * @returns {Boolean}
+         */
+        burgerMenu() {
+            if(this.winWidth < 1024 && (this.cfgSlots.menu || this.cfgSlots.list)) {
+                return true;
+            }
+            return false;
+        },
+
+        /**
+         * paddingLeft()
+         * Retourner l'espace à gauche si aside est à true
+         * @returns {String}
+         */
+        mobileMenuSize() {
+            if(this.winWidth < 1024) {
+                if(this.cfg.aside) {
+                    return '312px';
+                }
+                return '260px';
+            } else {
+                if(this.cfg.aside) {
+                    return '402px';
+                } else {
+                    return '350px';
+                }
+            }
+
+            //return '350px';
+        },
+        // EO paddingLeft()
+
+        /**
+         * Retourne true si la route active est l'index
+         * @returns {Boolean}
+         */
+        navIndex() {
+            if (this.cfg.backAction) {
+                if (this.cfg.backAction !== this.$route.path) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
 
     },
 
@@ -289,6 +364,18 @@ export default {
             window.close();
         },
         // EO closeWindow()
+
+        /**
+         * Lance l'action de retour lors du clique sur la flèche retour
+         */
+        actionBack() {
+            if (this.cfg.backAction) {
+                this.$router.push(this.cfg.backAction);
+            }
+            else {
+                this.closeWindow();
+            }
+        },
 
 
         /**
@@ -335,8 +422,26 @@ export default {
                 }
             }
 
-        }
+        },
         // EO launchFistResult()
+
+
+        /**
+         * Retourne le chemin vers le logo de l'application.
+         * Si cfg.logos.small existe, alors, c'est ce chemin qui sera utilisé. Dans le cas contraire, c'est cfg.logos.default
+         * qui sera retourné
+         * 
+         * @returns {String} Le chemin vers l'image
+         */
+        getLogo() {
+            if(this.cfg.logos.small) {
+                return this.cfg.logos.small;
+            } else if(this.cfg.logos.default) {
+                return this.cfg.logos.default;
+            } else {
+                return '';
+            }
+        },
     },
     updated() {
         if(this.appsLauncher) {
@@ -346,6 +451,13 @@ export default {
             let sidebar = document.querySelector('.apps-menu-sidebar');
             sidebar.scrollTo(0,0);
         }
+    },
+    mounted() {
+        this.winWidth = window.innerWidth;
+
+        window.addEventListener('resize', () => {
+            this.winWidth = window.innerWidth;
+        });
     }
 }
 </script>
