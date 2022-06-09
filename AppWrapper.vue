@@ -73,6 +73,8 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 import LoginModal from './LoginModal.vue'
 import StorageModal from './StorageModal.vue'
 
+import {getAuth, onAuthStateChanged} from 'firebase/auth'
+
 /**
  * Application wrapper component
  *
@@ -206,6 +208,21 @@ export default {
         for (const key in this.cfgSlots) {
             this.slots[key] = this.cfgSlots[key];
         }
+
+        let auth = getAuth(this.$app.firebaseApp);
+
+        onAuthStateChanged(auth, (user) => {
+
+            console.log(user);
+
+            this.$app.authToApi(user)
+            .then((local_user) => {
+                console.log(local_user);
+                this.setActiveStructureId(this.$app.active_structure_id);
+                this.setLocal_user(local_user);
+            });
+
+        });
 
         this.resize();
 

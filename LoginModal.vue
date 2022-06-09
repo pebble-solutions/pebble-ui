@@ -99,7 +99,6 @@ export default {
             this.$app.login(this, this.username, this.password)
             .then((resp) => {
                 this.error = null;
-                this.modal.hide();
                 this.$emit('structure-change', this.$app.active_structure_id);
                 this.$emit('auth-change', resp);
             })
@@ -128,6 +127,10 @@ export default {
                 });
             });
         }
+    },
+
+    beforeUnmount() {
+        this.modal.hide();
     },
 
     mounted() {
