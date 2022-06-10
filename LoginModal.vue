@@ -145,10 +145,6 @@ export default {
             this.pending.auth = false;
             this.error = error;
         });
-    },
-
-    beforeUnmount() {
-        this.modal.hide();
     }
 }
 </script>

@@ -89,8 +89,6 @@ import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
 import LoginModal from './LoginModal.vue'
 import StorageModal from './StorageModal.vue'
 
-import {getAuth, onAuthStateChanged} from 'firebase/auth'
-
 /**
  * Application wrapper component
  *
