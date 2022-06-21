@@ -117,7 +117,7 @@ export default {
                 sessLogin: true
             },
             menu: false,
-            menuMode : 'menu',
+            menuMode : 'list',
             slots: {
                 menu: true,
                 list: true,
