@@ -499,7 +499,8 @@ export default {
 
 .app-footer {
     opacity:0.5;
-    margin:20px auto;
+    margin:auto;
+    padding:20px 0px;
     text-align: center;
     transition: opacity .1s;
 }
