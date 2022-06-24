@@ -19,7 +19,6 @@ export default {
 
     computed: {
         restValue() {
-            console.log(100-this.progressValue);
             return 100-this.progressValue;
         }
     },
