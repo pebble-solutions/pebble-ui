@@ -453,7 +453,7 @@ export default {
 
     .pebble-aside-menu.menu-opened {
         display: block;
-        position: initial;
+        position: sticky;
         top: auto; 
         bottom: auto;
         width: 25%;
