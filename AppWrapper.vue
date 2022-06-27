@@ -65,7 +65,7 @@
             <slot name="list" v-else-if="menuMode == 'list' || slots.list"></slot>
         </div>
 
-        <div class="col"  v-if="slots.core">
+        <div class="col overflow-auto"  v-if="slots.core">
             <slot name="core"></slot>
 
             <div class="app-footer" id="app-footer">
