@@ -47,7 +47,7 @@
 
     <div class="row g-0" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" :style="'padding-left:'+paddingLeft+';'">
         <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
-            <div class="btn-group w-100 p-1" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
+            <div class="btn-group rounded-0 w-100 p-1 sticky-top bg-light shadow-sm border-bottom border-light" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
                 <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
                 <label class="btn btn-outline-custom w-50" for="menuMode-menu">
                     <i class="bi bi-three-dots-vertical"></i>
