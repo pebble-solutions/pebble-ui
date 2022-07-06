@@ -228,6 +228,10 @@ export default {
             this.menuMode = 'list';
         }
 
+        if (this.cfg.menuMode) {
+            this.menuMode = this.cfg.menuMode;
+        }
+
         this.resize();
 
         window.addEventListener('resize', () => {
