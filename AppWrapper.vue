@@ -47,7 +47,7 @@
 
     <div class="row g-0" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" :style="'padding-left:'+paddingLeft+';'">
         <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
-            <div class="btn-group rounded-0 w-100 p-1 sticky-top bg-light shadow-sm border-bottom border-light" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
+            <div class="btn-group rounded-0 w-100 p-1 sticky-top shadow-sm border-bottom" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'" :class="{'bg-light border-light': menuMode == 'list', 'bg-dark border-dark': menuMode == 'menu'}">
                 <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
                 <label class="btn btn-outline-custom w-50" for="menuMode-menu">
                     <i class="bi bi-three-dots-vertical"></i>
@@ -70,9 +70,8 @@
 
             <div class="app-footer" id="app-footer">
                 <div class="mb-2">
-                    <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Work less, do more" alt="Pebble" style="max-width: 48px;">
+                    <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Pebble: Work less, do more" alt="Pebble" style="max-width: 48px;">
                 </div>
-                <small class="d-block">Pebble  Version 5</small>
             </div>
         </div>
     </div>
@@ -255,6 +254,10 @@ export default {
         this.$app.addEventListener('structureChanged', (structureId) => {
             this.setActiveStructureId(structureId);
         });
+
+        this.$app.addEventListener('menuChanged', (status) => {
+            this.menuMode = status;
+        })
 
         this.$app.checkAuth();
 
