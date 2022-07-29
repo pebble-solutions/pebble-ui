@@ -17,7 +17,7 @@
 -->
 
 <template>
-    <div class="modal fade" :id="id+'Modal'" tabindex="-1" :aria-labelledby="id+'ModalLabel'" aria-hidden="true">
+    <div class="modal fade" :id="id+'Modal'" tabindex="-1" :aria-labelledby="id+'ModalLabel'" aria-hidden="true" :data-bs-backdrop="backdrop">
         <div class="modal-dialog" :class="classList">
             <form method="post" @submit.prevent="$emit('submit')" class="modal-content">
                 <div class="modal-header">
@@ -60,6 +60,7 @@ import * as bootstrap from "bootstrap"
  * @param {Boolean} pending
  * @param {String} size
  * @param {Boolean} footer
+ * @param {String|Boolean} backdrop
  *
  * @event submit {void}
  * @event delete {void}
@@ -89,6 +90,10 @@ export default {
         },
         footer: {
             type: Boolean,
+            default: true
+        },
+        backdrop: {
+            type: [String, Boolean],
             default: true
         }
     },

@@ -24,7 +24,7 @@
         </li>
         <li class="nav-item dropdown" v-if="local_user && (cfg.ppp == 'private' || cfg.ppp == 'partner')">
             <a href="{RACINE_VERSION}modules/espace/private/php/menu_profile.php" :title="'@'+local_user.login.pseudo" class="d-block text-decoration-none" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <UserImage :login="local_user.login" />
+                <UserImage :name="local_user.login.pseudo" />
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <h2 class="dropdown-header">{{local_user.login.pseudo}}</h2>

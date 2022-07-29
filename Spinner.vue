@@ -1,14 +1,19 @@
 <template>
-    <div class="text-center py-4" :class="classListSpinnerBox()">
-        <div :class="classListSpinner()" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        
-        <div class="fs-4" >{{message}}</div>
+    <div class="text-center py-4" :class="classListSpinnerBox+' '+classList">
+        <div :class="classListSpinner" role="status"></div>
+        <div class="fs-4" v-if="computedLabel">{{computedLabel}}</div>
     </div>
 </template>
 
 <script>
+/**
+ * Affiche un spinner de chargement
+ * 
+ * @prop {String} type Classe bootstrap du spinner (ex : border pour spinner-border)
+ * @prop {String} variant couleur bootstrap (ex : secondary)
+ * @prop {String} classList liste de classes additionnelles à placer dans l'élément maitre
+ * @prop {String} label Libellé sous le spinner
+ */
 export default {
     props: {
         type: {
@@ -19,19 +24,26 @@ export default {
             type: String,
             default: "secondary"
         },
-        message: {
+        classList: String,
+        message: String,
+        label: {
             type: String,
-            default: "Chargement en cours..."
+            default: "Chargement..."
         }
     },
 
-    methods: {
+    computed: {
+        computedLabel() {
+            if (this.message) {
+                return this.message;
+            }
+            else {
+                return this.label;
+            }
+        },
+
         /**
-         * retourn une liste de class pour l'element du spinner
-         * 
-         * type {String} :  - border    spinner en forme de border cercle qui turne
-         *                  - grow      spinner cercle plein qui grossit
-         * 
+         * retourn une liste de classe pour l'element du spinner en utilisant la propriété type.
          * @return {String}
          */
         classListSpinner() {
@@ -45,17 +57,7 @@ export default {
         },
 
         /**
-         * retourn une liste de class pour le message en dessous du spinner.
-         * 
-         * variant {String} :   - primary
-         *                      - secondary (default)
-         *                      - success
-         *                      - danger
-         *                      - warning
-         *                      - info
-         *                      - light
-         *                      - dark
-         * 
+         * retourn une liste de classes basée sur la propriété variant (danger, secondary...)
          * @return {String}
          */
         classListSpinnerBox() {
@@ -67,6 +69,6 @@ export default {
 
             return classList;
         }
-    },
+    }
 }
 </script>
