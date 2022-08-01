@@ -33,7 +33,7 @@
 
                 <hr class="dropdown-divider" v-if="smallScreen && cfg.ppp == 'private'">
                 <h2 class="dropdown-header" v-if="smallScreen && cfg.ppp == 'private'">Structure</h2>
-                <div class="dropdown-item px-0" v-if="smallScreen && cfg.ppp == 'private'">
+                <div class="px-0" v-if="smallScreen && cfg.ppp == 'private'">
                     <button class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in local_user.structures" :key="structure.id" @click.prevent="setActiveStructure(structure.id)">
                         {{structure.nom_interne}}
                         <i v-if="structure.id === active_structure_id" class="bi bi-check2 text-success"></i>
