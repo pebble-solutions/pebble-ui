@@ -61,7 +61,7 @@
 
 <script>
 
-import UserImage from './UserImage.vue'
+import UserImage from '@/components/pebble-ui/UserImage.vue'
 
 /**
  * Header menu component
