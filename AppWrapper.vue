@@ -35,10 +35,12 @@
                     :cfg-menu="cfgMenu"
                     :cfg="cfg"
                     :local_user="local_user"
+                    :licence="licence"
                     :active_structure_id="active_structure_id"
 
                     @config-module="$emit('config-menu')"
                     @storage-modal="storageModal = true"
+                    @licence-modal="licenceModal = true"
                     @structure-change="activateStructure" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
@@ -76,17 +78,23 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user && cfg.ppp !== 'public'" @auth-change="setLocal_user" @structure-change="setActiveStructureId" />
+    <LoginModal v-if="!local_user && !pending.initAuth && cfg.ppp !== 'public'" />
 
-    <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" />
+    <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" v-if="cfg.ppp == 'private'" />
+
+    <AppModal v-if="licenceModal" :display="true" :footer="false" title="Licence" id="licenceOverview" @modal-hide="licenceModal = false">
+        <LicenceOverview :licence="licence" />
+    </AppModal>
 </template>
 
 <script>
 
 import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
-import LoginModal from './LoginModal.vue'
+import LoginModal from './login/LoginModal.vue'
 import StorageModal from './StorageModal.vue'
+import AppModal from './AppModal.vue'
+import LicenceOverview from './licence/LicenceOverview.vue'
 
 /**
  * Application wrapper component
@@ -113,7 +121,8 @@ export default {
         return {
             pending: {
                 structures: true,
-                sessLogin: true
+                sessLogin: true,
+                initAuth: true
             },
             menu: false,
             menuMode : 'list',
@@ -125,17 +134,13 @@ export default {
             },
             local_user: null,
             active_structure_id: null,
-            storageModal: false
+            storageModal: false,
+            licenceModal: false,
+            licence: null
         }
     },
 
-    components: {
-        // Chargement des dépenses externes
-        AppHeaderMenu,
-        AppHeaderUserMenu,
-        LoginModal,
-        StorageModal
-    },
+    components: { AppHeaderMenu, AppHeaderUserMenu, LoginModal, StorageModal, AppModal, LicenceOverview },
 
     watch: {
         /**
@@ -257,7 +262,15 @@ export default {
 
         this.$app.addEventListener('menuChanged', (status) => {
             this.menuMode = status;
+        });
+
+        this.$app.addEventListener('licenceChanged', (licence) => {
+            this.licence = licence;
         })
+
+        this.$app.addEventListener('authInited', () => {
+            this.pending.initAuth = false;
+        });
 
         this.$app.checkAuth();
 

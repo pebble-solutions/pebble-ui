@@ -16,10 +16,7 @@
         <li class="nav-item dropdown" v-if="local_user && cfg.ppp == 'private' && !smallScreen">
             <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" v-if="cfg.ppp == 'private' && !smallScreen"><i class="fa fa-sitemap"></i> {{activeStructure.nom_interne}}</a>
             <div class="dropdown-menu dropdown-menu-right">
-                <button class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in local_user.structures" :key="structure.id" @click.prevent="setActiveStructure(structure.id)">
-                    {{structure.nom_interne}}
-                    <i v-if="structure.id === active_structure_id" class="bi bi-check2 text-success"></i>
-                </button>
+                <AppStructureMenuItem :active_structure_id="active_structure_id" v-for="structure in structures" :key="'structure-'+structure.id" :structure="structure" @select-structure="setActiveStructure" />
             </div>
         </li>
         <li class="nav-item dropdown" v-if="local_user && (cfg.ppp == 'private' || cfg.ppp == 'partner')">
@@ -31,45 +28,72 @@
                 <a class="dropdown-item" href="/mkg/modules/espace/private/php/login_3_resume.php?login_id={sess_login_id}" target="espaceApp">Mon compte</a>
                 <a class="dropdown-item" @click.prevent="logout()" href="#!">Déconnexion</a>
 
-                <hr class="dropdown-divider" v-if="smallScreen && cfg.ppp == 'private'">
-                <h2 class="dropdown-header" v-if="smallScreen && cfg.ppp == 'private'">Structure</h2>
-                <div class="dropdown-item px-0" v-if="smallScreen && cfg.ppp == 'private'">
-                    <button class="dropdown-item d-flex align-items-center justify-content-between" v-for="structure in local_user.structures" :key="structure.id" @click.prevent="setActiveStructure(structure.id)">
-                        {{structure.nom_interne}}
-                        <i v-if="structure.id === active_structure_id" class="bi bi-check2 text-success"></i>
-                    </button>
+                <div class="user-menu-options-tools" v-if="cfg.ppp == 'private'">
+                    <hr class="dropdown-divider">
+                    <h2 class="dropdown-header">Structure</h2>
+                    <AppStructureMenuItem :active_structure_id="active_structure_id" v-for="structure in structures" :key="'structure-sub-'+structure.id" :structure="structure" @select-structure="setActiveStructure" />
                 </div>
 
-                <hr class="dropdown-divider" v-if="smallScreen && cfg.ppp == 'private'">
-                <h2 class="dropdown-header" v-if="smallScreen && cfg.ppp == 'private'">Options</h2>
-                <a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp" v-if="smallScreen && cfg.ppp == 'private'">Configuration générale</a>
-                <button class="dropdown-item" @click.prevent="storageModal()" v-if="smallScreen && cfg.ppp == 'private'">Data viewer</button>
+                <hr class="dropdown-divider">
+                <h2 class="dropdown-header">Licence</h2>
+                <button class="dropdown-item" @click.prevent="$emit('licence-modal')">{{licence.getComputedName()}}</button>
+                <button class="dropdown-item" @click.prevent="switchLicence()">Autres licences</button>
+
+                <div class="user-menu-options-tools" v-if="cfg.ppp == 'private'">
+                    <hr class="dropdown-divider">
+                    <h2 class="dropdown-header">Options</h2>
+                    <AppOptionsMenu :cfg-menu="cfgMenu" @config-module="configModule()" @storage-modal="storageModal()" />
+                </div>
+
             </div>
         </li>
-        <li class="nav-item dropdown" v-if="cfg.ppp == 'private' && !smallScreen">
+        <li class="nav-item dropdown toolbar-menu-options-tools" v-if="cfg.ppp == 'private'">
             <a href="#" class="nav-link text-light"  data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="bi bi-gear"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a :href="cfgMenu.href" class="dropdown-item" @click.prevent="configModule()" v-if="cfgMenu.href">Configuration du module</a>
-                <a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp">Configuration générale</a>
-                <button class="dropdown-item" @click.prevent="storageModal()">Data viewer</button>
+                <AppOptionsMenu :cfg-menu="cfgMenu" @config-module="configModule()" @storage-modal="storageModal()" />
             </div>
         </li>
     </ul>
 </template>
 
+<style scoped>
+
+.user-menu-options-tools {
+    display: block;
+}
+
+.toolbar-menu-options-tools {
+    display:none;
+}
+
+@media (min-width: 1024px) {
+    .user-menu-options-tools {
+        display: none;
+    }
+
+    .toolbar-menu-options-tools {
+        display:initial;
+    }
+}
+
+</style>
+
 <script>
 
 import UserImage from './UserImage.vue'
+import AppOptionsMenu from './AppOptionsMenu.vue';
+import AppStructureMenuItem from './AppStructureMenuItem.vue';
 
 /**
  * Header menu component
  * 
  * @param {Object} cfgMenu
- * @param {object} cfg
+ * @param {Object} cfg
  * @param {Object} local_user
  * @param {Number} active_structure_id
+ * @param {Object} licence
  * 
  * @event {Void} config-module
  * @event {Void} storage-modal
@@ -80,7 +104,8 @@ export default {
         local_user: Object,
         active_structure_id: Number,
         cfgMenu: Object,
-        cfg: Object
+        cfg: Object,
+        licence: Object
     },
 
     data() {
@@ -89,11 +114,13 @@ export default {
         }
     },
 
-    emits: ['storage-modal', 'config-module', 'structure-change'],
+    emits: ['storage-modal', 'config-module', 'structure-change', 'licence-modal'],
 
     components: {
-        UserImage
-    },
+    UserImage,
+    AppOptionsMenu,
+    AppStructureMenuItem
+},
 
     computed: {
         /**
@@ -102,18 +129,6 @@ export default {
          */
         activeStructure() {
             return this.local_user.structures.find(e => e.id === this.active_structure_id);
-        },
-
-        /**
-         * return true if window size is less than 1024
-         */
-        smallScreen() {
-            if(this.winWidth < 1024) {
-                return true;
-            }
-
-
-            return false;
         }
     },
     
@@ -145,14 +160,19 @@ export default {
          */
         logout() {
             this.$app.logout();
-        }
-    },
-    mounted() {
-        this.winWidth = window.innerWidth;
+        },
 
-        window.addEventListener('resize', () => {
-            this.winWidth = window.innerWidth;
-        });
+        switchLicence() {
+            this.$app.getLicences()
+            .then(licences => {
+                if (licences.length > 1) {
+                    this.$app.clearAuth();
+                }
+                else {
+                    alert("Vous ne disposez pas d'autres licences pour ce compte");
+                }
+            })
+        }
     }
 }
 </script>

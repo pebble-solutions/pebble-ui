@@ -1,5 +1,12 @@
 <template>
-    <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-if="imageUrl" :class="classList"></span>
+    <div v-if="display == 'full'" class="my-2 text-center">
+        <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-if="imageUrl" :class="classList"></span>
+        <span class="user-image" :style="'background-color:'+name.toColor()+';'" v-else :class="classList">
+            {{name[0].toUpperCase()}}
+        </span>
+        <div class="mt-2" :class="classNameUsername">{{name}}</div>
+    </div>
+    <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-else-if="imageUrl" :class="classList"></span>
     <span class="user-image" :style="'background-color:'+name.toColor()+';'" v-else :class="classList">
         {{name[0].toUpperCase()}}
     </span>
@@ -56,7 +63,15 @@ export default {
         size: String,
         className: String,
         name: String,
-        imageUrl: String
+        imageUrl: String,
+        display: {
+            type: String,
+            default: 'image'
+        },
+        classNameUsername: {
+            type: String,
+            default: ''
+        }
     },
 
     computed: {
