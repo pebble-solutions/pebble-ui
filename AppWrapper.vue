@@ -74,6 +74,7 @@
             <div class="app-footer" id="app-footer">
                 <div class="mb-2">
                     <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Pebble: Work less, do more" alt="Pebble" style="max-width: 48px;">
+                    <div v-if="env != 'prod'"><code>Environnement {{env}}</code></div>
                 </div>
             </div>
         </div>
@@ -138,7 +139,8 @@ export default {
             storageModal: false,
             licenceModal: false,
             licence: null,
-            isMobile : false
+            isMobile : false,
+            env: null
         }
     },
 
@@ -283,7 +285,13 @@ export default {
             this.pending.initAuth = false;
         });
 
+        this.$app.addEventListener('authError', () => {
+            this.pending.initAuth = false;
+        });
+
         this.$app.checkAuth();
+
+        this.env = this.$app.env;
 
     }
 };

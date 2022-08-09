@@ -92,13 +92,13 @@ export default {
         login() {
             this.pending.auth = true;
             return this.$app.login(this, this.username, this.password)
-                .catch((error) => {
+            .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: "message"
                 });
                 this.$emit("error", this.error);
             })
-                .finally(() => {
+            .finally(() => {
                 this.pending.auth = false;
             });
         },
@@ -123,6 +123,8 @@ export default {
         }
     },
     mounted() {
+        this.user = this.$app.firebase_user;
+        
         this.$app.addEventListener("auth", () => {
             this.pending.auth = true;
         });

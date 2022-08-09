@@ -16,6 +16,7 @@
 
                     <div class="text-center mt-3 pt-3 mb-2">
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
+                        <div v-if="env != 'prod'"><code>Environnement {{env}}</code></div>
                     </div>
                 </div>
             </div>
@@ -49,7 +50,8 @@ export default {
             licences: [],
             view: 'form',
             user: null,
-            error: null
+            error: null,
+            env: null
         };
     },
 
@@ -97,7 +99,7 @@ export default {
         this.modal.show();
 
         this.user = this.$app.firebase_user;
-        this.licences = this.$app.licences;
+        this.licences = this.$app.licences ? this.$app.licences : [];
 
         this.initView();
         
@@ -119,6 +121,8 @@ export default {
         this.$app.addEventListener("authError", (message) => {
             this.error = message;
         });
+
+        this.env = this.$app.env;
     },
 
     components: { LoginForm, LicenceSelector, UserImage, AlertMessage }
