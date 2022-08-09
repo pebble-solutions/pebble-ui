@@ -108,19 +108,9 @@ export default {
         licence: Object
     },
 
-    data() {
-        return {
-            winWidth : 0
-        }
-    },
-
     emits: ['storage-modal', 'config-module', 'structure-change', 'licence-modal'],
 
-    components: {
-    UserImage,
-    AppOptionsMenu,
-    AppStructureMenuItem
-},
+    components: { UserImage, AppOptionsMenu, AppStructureMenuItem },
 
     computed: {
         /**
@@ -162,6 +152,11 @@ export default {
             this.$app.logout();
         },
 
+        /**
+         * Vérifie que l'utilisateur dispose de plusieurs licences pour cette application. Dans ce
+         * cas, vide l'auth afin d'afficher la modal de sélection des licences. Dans le cas contraire,
+         * affiche une notification
+         */
         switchLicence() {
             this.$app.getLicences()
             .then(licences => {

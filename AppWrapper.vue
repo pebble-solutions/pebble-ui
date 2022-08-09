@@ -21,6 +21,7 @@
             :cfg-slots="cfgSlots"
             :local_user="local_user"
 
+            @update-sidebar="updateSidebar"
             @menu-toggle="menu = !menu"
             @config-module="$emit('config-menu')" />
 
@@ -136,7 +137,8 @@ export default {
             active_structure_id: null,
             storageModal: false,
             licenceModal: false,
-            licence: null
+            licence: null,
+            isMobile : false
         }
     },
 
@@ -164,7 +166,7 @@ export default {
          * @returns {String}
          */
         paddingLeft() {
-            if (this.cfg.aside) {
+            if (this.cfg.aside && !this.isMobile) {
                 return '52px';
             }
             else {
@@ -220,6 +222,15 @@ export default {
         activateStructure(structureId) {
             this.$app.setStructure(structureId);
             this.setActiveStructureId(structureId);
+        },
+
+        /**
+         * Met a jour la variable isMobile a true si la taille est une taille mobile,
+         * défini dans AppHeaderMenu
+         * @param {Boolean} isMobile 
+         */
+        updateSidebar(isMobile) {
+            this.isMobile = isMobile;
         }
     },
     
