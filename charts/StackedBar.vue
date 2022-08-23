@@ -78,8 +78,6 @@ export default {
     mounted() {
         this.Appbars = this.bars;
         this.calculPercentage();
-
-        if(!this.waitData) {console.log("bars", this.Appbars);}
     }
 
 
