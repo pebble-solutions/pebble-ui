@@ -49,6 +49,18 @@ export default {
         }
     },
 
+    watch: {
+        bars() {
+            this.calculPercentage();
+        },
+
+        totalValue(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.calculPercentage();
+            }
+        }
+    },
+
     computed: {
         total() {
             if(this.totalValue) {
@@ -67,6 +79,8 @@ export default {
 
     methods: {
         calculPercentage() {
+            this.Appbars = this.bars;
+
             this.Appbars.forEach(bar => {
                 bar.percent = ((bar.value*100) / this.total).toFixed(0);
             });
@@ -76,7 +90,6 @@ export default {
     },
 
     mounted() {
-        this.Appbars = this.bars;
         this.calculPercentage();
     }
 
