@@ -49,7 +49,7 @@
     </div>
 
     <div class="row g-0" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" :style="'padding-left:'+paddingLeft+';'">
-        <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
+        <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu shadow-sm" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
             <div class="btn-group rounded-0 w-100 p-1 sticky-top shadow-sm border-bottom" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'" :class="{'bg-light border-light': menuMode == 'list', 'bg-dark border-dark': menuMode == 'menu'}">
                 <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
                 <label class="btn btn-outline-custom w-50" for="menuMode-menu">
@@ -68,7 +68,7 @@
             <slot name="list" v-else-if="menuMode == 'list' || slots.list"></slot>
         </div>
 
-        <div class="col overflow-auto"  v-if="slots.core">
+        <div class="col"  v-if="slots.core">
             <slot name="core"></slot>
 
             <div class="app-footer" id="app-footer">
@@ -467,7 +467,6 @@ export default {
 
 .pebble-aside-menu {
     display: none;
-
 }
 
 .pebble-aside-menu.menu-opened {
@@ -477,6 +476,7 @@ export default {
     bottom : 0px;
     width: 100%!important;
     max-width: 260px;
+    z-index:1100;
 }
 
 .pebble-cursor-pointer {
