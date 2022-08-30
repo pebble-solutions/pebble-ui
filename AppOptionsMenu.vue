@@ -14,6 +14,8 @@ export default {
         }
     },
 
+    emits: ['config-module', 'storage-modal'],
+
     methods: {
         /**
          * Envoie un événement 'config-module' à l'élément parent

@@ -117,7 +117,7 @@ export default {
         cfgSlots: Object
     },
 
-    emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change'],
+    emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change', 'config-menu'],
 
     data() {
         return {
