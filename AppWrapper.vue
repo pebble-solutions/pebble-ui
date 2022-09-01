@@ -25,7 +25,7 @@
             @menu-toggle="menu = !menu"
             @config-module="$emit('config-menu')" />
 
-        <div class="col d-flex align-items-center justify-content-between">
+        <div class="col d-flex align-items-center justify-content-between" :class="classHeader">
             <div>
                 <slot name="header" v-if="slots.header"></slot>
             </div>
@@ -68,7 +68,7 @@
             <slot name="list" v-else-if="menuMode == 'list' || slots.list"></slot>
         </div>
 
-        <div class="col"  v-if="slots.core">
+        <div class="col" :class="classCore" v-if="slots.core">
             <slot name="core"></slot>
 
             <div class="app-footer" id="app-footer">
@@ -114,7 +114,17 @@ export default {
     props: {
         cfg: Object,
         cfgMenu: Object,
-        cfgSlots: Object
+        cfgSlots: {
+            type: Object,
+            default() {
+                return {
+                    menu: true,
+                    list: true,
+                    core: true,
+                    header: true
+                }
+            }
+        }
     },
 
     emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change', 'config-menu'],
@@ -175,7 +185,34 @@ export default {
                 return '0px';
             }
         },
-        // EO paddingLeft()
+        
+        /**
+         * Retourne la classe pour l'élément d'interface "core"
+         */
+        classCore() {
+            return this.getClassName('core');
+        },
+
+        /**
+         * Retourne la classe pour l'élément d'interface "sidebar"
+         */
+        classSidebar() {
+            return this.getClassName('sidebar');
+        },
+
+        /**
+         * Retourne la classe pour l'élément d'interface "header"
+         */
+        classHeader() {
+            return this.getClassName('header');
+        },
+
+        /**
+         * Retourne les options complémentaires de configuration des slots
+         */
+        slotsOptions() {
+            return this.cfgSlots.options ? this.cfgSlots.options : {};
+        }
     },
 
     methods: {
@@ -233,6 +270,18 @@ export default {
          */
         updateSidebar(isMobile) {
             this.isMobile = isMobile;
+        },
+
+        /**
+         * Retourne le nom de la classe CSS pour un slot donné depuis la configuration.
+         * @param {String} slot Le nom du slot
+         * @returns {String}
+         */
+        getClassName(slot) {
+            if (this.slotsOptions[slot]) {
+                return this.slotsOptions[slot].className ? this.slotsOptions[slot].className : '';
+            }
+            return '';
         }
     },
     
