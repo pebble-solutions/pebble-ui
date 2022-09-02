@@ -76,7 +76,17 @@ export default {
 
     computed: {
         classList() {
-            return this.size+' '+this.className;
+            let classList = '';
+
+            if(this.size) {
+                classList += ' user-image-'+this.size;
+            }
+
+            if(this.className) {
+                classList += ' ' + this.className;
+            }
+
+            return classList;
         }
     }
 }
