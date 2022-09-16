@@ -39,6 +39,7 @@
 
         <div class="d-grid gap-2">
             <button @click="loginProvider('google')" type="button" class="btn btn-outline-secondary btn.lg"><i class="bi bi-google"></i> Connexion avec Google</button>
+            <button @click="loginProvider('microsoft')" type="button" class="btn btn-outline-secondary btn.lg"><i class="bi bi-microsoft"></i> Connexion avec Microsoft</button>
         </div>
     </form>
 
@@ -108,7 +109,7 @@ export default {
          */
         loginProvider(provider) {
             return this.$app.loginProvider(provider)
-                .catch((error) => {
+            .catch((error) => {
                 this.error = this.$app.catchError(error, {
                     mode: "message"
                 });

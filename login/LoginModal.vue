@@ -115,6 +115,7 @@ export default {
 
         this.$app.addEventListener("authCleared", () => {
             this.user = null;
+            this.licences = [];
             this.initView();
         });
 

@@ -44,9 +44,10 @@
 }
 
 .user-image-xl {
-    width:128px; height:128px;
-    line-height: 128px; 
-    min-width: 128px; min-height: 128px;
+    width:96px; height:96px;
+    line-height: 96px; 
+    min-width: 96px; min-height: 96px;
+    font-size: 32px;
 }
 </style>
 
@@ -75,8 +76,28 @@ export default {
     },
 
     computed: {
+        /** 
+         * Retourne la liste de class a ajouter
+         * size posible: 'xs','sm','lg', 'xl' 
+         * 
+         * @return String
+        */
         classList() {
-            return this.size+' '+this.className;
+            let classList = '';
+
+            if(this.size) {
+                if(this.size.search(/user-image-/) != -1) {
+                    classList += this.size
+                } else {
+                    classList += 'user-image-' + this.size;
+                }
+            }
+
+            if(this.className) {
+                classList += ' ' + this.className;
+            }
+
+            return classList;
         }
     }
 }

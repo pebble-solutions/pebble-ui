@@ -13,8 +13,8 @@
 
 <template>
     <ul class="nav align-items-center mx-2">
-        <li class="nav-item dropdown" v-if="local_user && cfg.ppp == 'private' && !smallScreen">
-            <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" v-if="cfg.ppp == 'private' && !smallScreen"><i class="fa fa-sitemap"></i> {{activeStructure.nom_interne}}</a>
+        <li class="nav-item dropdown structure-menu-options-tools" v-if="local_user && cfg.ppp == 'private'">
+            <a href="#" title="Changer de structure" class="nav-link text-light dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" v-if="cfg.ppp == 'private'"><i class="fa fa-sitemap"></i> {{activeStructure.nom_interne}}</a>
             <div class="dropdown-menu dropdown-menu-right">
                 <AppStructureMenuItem :active_structure_id="active_structure_id" v-for="structure in structures" :key="'structure-'+structure.id" :structure="structure" @select-structure="setActiveStructure" />
             </div>
@@ -64,7 +64,8 @@
     display: block;
 }
 
-.toolbar-menu-options-tools {
+.toolbar-menu-options-tools,
+.structure-menu-options-tools {
     display:none;
 }
 
@@ -73,7 +74,8 @@
         display: none;
     }
 
-    .toolbar-menu-options-tools {
+    .toolbar-menu-options-tools,
+    .structure-menu-options-tools {
         display:initial;
     }
 }
@@ -119,6 +121,20 @@ export default {
          */
         activeStructure() {
             return this.local_user.structures.find(e => e.id === this.active_structure_id);
+        },
+
+        /**
+         * Retourne la liste des structures du local_user
+         * @return {Array}
+         */
+        structures() {
+            let structures = [];
+
+            if (this.local_user) {
+                structures = this.local_user.structures;
+            }
+
+            return typeof structures === 'object' ? structures : [];
         }
     },
     
