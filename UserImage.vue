@@ -1,14 +1,14 @@
 <template>
     <div v-if="display == 'full'" class="my-2 text-center">
         <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-if="imageUrl" :class="classList"></span>
-        <span class="user-image" :style="'background-color:'+name.toColor()+';'" v-else :class="classList">
-            {{name[0].toUpperCase()}}
+        <span class="user-image" :style="'background-color:'+finalName.toColor()+';'" v-else :class="classList">
+            {{finalName[0].toUpperCase()}}
         </span>
-        <div class="mt-2" :class="classNameUsername">{{name}}</div>
+        <div class="mt-2" :class="classNameUsername">{{finalName}}</div>
     </div>
     <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-else-if="imageUrl" :class="classList"></span>
-    <span class="user-image" :style="'background-color:'+name.toColor()+';'" v-else :class="classList">
-        {{name[0].toUpperCase()}}
+    <span class="user-image" :style="'background-color:'+finalName.toColor()+';'" v-else :class="classList">
+        {{finalName[0].toUpperCase()}}
     </span>
 </template>
 
@@ -81,7 +81,7 @@ export default {
          * size posible: 'xs','sm','lg', 'xl' 
          * 
          * @return String
-        */
+         */
         classList() {
             let classList = '';
 
@@ -98,6 +98,18 @@ export default {
             }
 
             return classList;
+        },
+
+
+        /**
+         * Transforme la data name en une chaine de caractère obligatoire. Si name est null
+         * ou undefined alors on retourne la chaine '?'
+         * 
+         * @returns {String}
+         */
+        finalName() {
+
+            return typeof this.name === 'string' ? this.name : '?';
         }
     }
 }
