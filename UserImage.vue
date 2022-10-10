@@ -44,9 +44,10 @@
 }
 
 .user-image-xl {
-    width:128px; height:128px;
-    line-height: 128px; 
-    min-width: 128px; min-height: 128px;
+    width:96px; height:96px;
+    line-height: 96px; 
+    min-width: 96px; min-height: 96px;
+    font-size: 32px;
 }
 </style>
 

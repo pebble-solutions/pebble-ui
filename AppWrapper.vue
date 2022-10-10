@@ -42,7 +42,8 @@
                     @config-module="$emit('config-menu')"
                     @storage-modal="storageModal = true"
                     @licence-modal="licenceModal = true"
-                    @structure-change="activateStructure" />
+                    @structure-change="activateStructure"
+                    @user-modal="userModal = true" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
         </div>
@@ -87,6 +88,10 @@
     <AppModal v-if="licenceModal" :display="true" :footer="false" title="Licence" id="licenceOverview" @modal-hide="licenceModal = false">
         <LicenceOverview :licence="licence" />
     </AppModal>
+
+    <AppModal title="Mon compte" v-if="userModal" :display="true" :footer="false" id="accountOverview" @modal-hide="userModal = false">
+        <UserForm />
+    </AppModal>
 </template>
 
 <script>
@@ -97,6 +102,7 @@ import LoginModal from './login/LoginModal.vue'
 import StorageModal from './StorageModal.vue'
 import AppModal from './AppModal.vue'
 import LicenceOverview from './licence/LicenceOverview.vue'
+import UserForm from './user/UserForm.vue'
 
 /**
  * Application wrapper component
@@ -150,11 +156,12 @@ export default {
             licenceModal: false,
             licence: null,
             isMobile : false,
-            env: null
+            env: null,
+            userModal: false
         }
     },
 
-    components: { AppHeaderMenu, AppHeaderUserMenu, LoginModal, StorageModal, AppModal, LicenceOverview },
+    components: { AppHeaderMenu, AppHeaderUserMenu, LoginModal, StorageModal, AppModal, LicenceOverview, UserForm },
 
     watch: {
         /**
