@@ -34,6 +34,8 @@ export default {
         }
     },
 
+    emits: ['confirm', 'cancel'],
+
     methods: {
         /**
          * Envoie l'événement de validation à l'élément parent
