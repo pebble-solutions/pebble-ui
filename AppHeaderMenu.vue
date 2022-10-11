@@ -452,7 +452,7 @@ export default {
             } else {
                 return '';
             }
-        },
+        }
     },
     updated() {
         if(this.appsLauncher) {

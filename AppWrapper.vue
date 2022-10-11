@@ -304,7 +304,7 @@ export default {
             this.resize();
         });
 
-        this.$app.addEventListener('authCleared', () => {
+        this.$app.addEventListener('licenceCleared', () => {
             this.setLocal_user(null);
             this.setActiveStructureId(null);
             this.$router.push('/');

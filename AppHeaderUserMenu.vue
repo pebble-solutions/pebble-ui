@@ -177,7 +177,7 @@ export default {
             this.$app.getLicences()
             .then(licences => {
                 if (licences.length > 1) {
-                    this.$app.clearAuth();
+                    this.$app.clearLicence();
                 }
                 else {
                     alert("Vous ne disposez pas d'autres licences pour ce compte");
