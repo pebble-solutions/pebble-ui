@@ -18,12 +18,12 @@
 <section>
 	<div class="py-2" v-if="mdpid === 2">
 		<div class="password d-flex flex-column align-items-center" style="letter-spacing: 1px;">
-			<input class="mt-2" type="password" placeholder="Nouveau mot de passe" autocomplete="off" v-model="newPassword">
+			<input class="form-control" type="password" placeholder="Nouveau mot de passe" autocomplete="off" v-model="newPassword">
 			<div>
 					
 				<transition class="p-1 m-1 mt-2 p-2 alert " v-bind:class="{ 'alert-dark': warningId, 'alert-danger': !warningId }" role="alert" >
 					<div v-if="passwordValidation.errors.length > 0 && !submitted" class="hints">
-						<p class="m-0" v-for="error in passwordValidation.errors" :key="error"><small>{{error}}</small></p>
+						<div v-for="error in passwordValidation.errors" :key="error">{{error}}</div>
 					</div>
 				</transition>
 			</div>
@@ -77,17 +77,19 @@ export default {
 		/**
 		 * Verifie si le mot de passe est bien le mot de passe du login de firebase
 		 */
-		/* verifLogin(){
-				reauthenticateWithCredential(getAuth().currentUser,EmailAuthProvider.credential(getAuth().currentUser.email, this.oldPassword))
-				.then((data) => {
-					console.log(data);
-				})
-		}, */
+		reauth() {
+			let cred = EmailAuthProvider.credential(getAuth().currentUser.email, this.oldPassword);
+
+			return reauthenticateWithCredential(getAuth().currentUser, cred)
+			.then((userCred) => {
+				return userCred;
+			});
+		},
 
 		/**
 		 * Verifie si le mot de passe entrer est bon, sinon renvoie des messages d'erreur sous forme de pop-up (grâce à oldPasswordId)
 		 */
-		verifOldPassword(){
+		verifOldPassword() {
 			if(this.oldPassword==""){
 				this.oldPasswordError="Veuillez entrer votre mot de passe";
 				this.oldPasswordId=true;
@@ -97,9 +99,17 @@ export default {
 				this.oldPassword="";
 				this.oldPasswordError="Mot de passe incorrect"; */
 			}/* else if(this.oldPassword === "2"){
-				console.log(this.verifLogin());
-			} */else{
-				this.mdpid=2
+				console.log(this.reauth());
+			} */
+			else {
+				this.reauth()
+				.then(() => {
+					console.log("j'ai gagné !");
+					this.mdpid=2
+				})
+				.catch((error) => {
+					console.error("j'ai perdu :-(", error);
+				});
 			}
 		},
 
