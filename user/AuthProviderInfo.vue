@@ -2,7 +2,7 @@
 import { provide } from 'vue';
 <template>
     <div class="text-secondary mt-2 my-2 ">
-        <adress>{{mail}}</adress>
+        <div>{{mail}}</div>
         <a href="#!" class="d-flex justify-content-center link-secondary text-decoration-none align-items-center" @click.prevent="infoProvider = !infoProvider">
             <i class="me-2" :class="providerIcon" v-if="providerIcon"></i>
             <span>{{provider}}</span>

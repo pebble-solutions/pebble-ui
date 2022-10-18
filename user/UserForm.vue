@@ -1,19 +1,19 @@
 <template>
     <section class="text-center">
 
-        <!-- Composant avatar-->
-        <UserImage :name="imageName" size="user-image-xl"  @click.prevent="imgUser =! imgUser"/>
+        <DisplayAvatar :userName="displayName" :lock="lockedDisplay('Avatar')" @edit-mode="updateDisplayStatus($event,'Avatar')"/>
 
-        <div class="input-group mb-3 mt-3" v-if="imgUser === false  && !formUser ">
-        <input type="file" class="form-control" id="inputGroupFile02">
-        <label class="input-group-text" for="inputGroupFile02">Importer</label>
-        </div> 
-        <!-- Fin Composant avatar-->
-    
-        <DisplayNameForm :displayName="displayName" />
-        
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <DisplayNameForm :mail="email" :displayName="displayName" :lock="lockedDisplay('Name')" @edit-mode="updateDisplayStatus($event,'Name')"/>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->        
+        <hr>
         <AuthProviderInfo :provider="provider" :mail="email" :provider-icon="'bi bi-google'" v-if="provider !== 'password'" />
-        <PasswordUpdate v-else></PasswordUpdate>
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+        <ManagePassword :lock="lockedDisplay('Password')" @edit-mode="updateDisplayStatus($event,'Password')" v-else/>
         
     </section>
 
@@ -21,59 +21,82 @@
 
 <script>
 
-import UserImage from '../UserImage.vue';
 import AuthProviderInfo from './AuthProviderInfo.vue';
-import PasswordUpdate from './PasswordUpdate.vue';
 import DisplayNameForm from './DisplayNameForm.vue';
+import ManagePassword from './ManagePassword.vue';
+import DisplayAvatar from './DisplayAvatar.vue';
 
 export default {
 
     data() {
         return {
-            imgUser:true,
             infoProvider: false,
-            displayName: null
+            displayName: null,
+            displayInEdition:null
         }
     },
 
     computed: {
+
+        /**
+         * Retourne le nom du provider utilisé par l'utilisateur via l'API firebase
+         * 
+         * @return {string}
+         */
         provider() {
             return this.$app.firebase_user.providerData[0].providerId;
         },
 
+        /**
+         * Retourne l'email de connexion de l'utilisateur via l'API firebase
+         *  
+         * @return {string}
+         */
         email(){
             return this.$app.firebase_user.email;
         },
 
-        imageName(){
-            if(this.displayName === 'Pseudo Non Défini') return "?" ;
-            else return this.displayName;
+    },
+    methods: {
+
+        /**
+         * Retourne une valeur booléenne en fonction du nom de display ouvert(utilisé) afin de déterminer si il peut se deployer ou non 
+         * 
+         * @param {String} nameDisplay 
+         * 
+         * @returns {Boolean} 
+         */
+        lockedDisplay(nameDisplay){
+            if(!this.displayInEdition)return false;
+            return this.displayInEdition !== nameDisplay; 
         },
 
-    },
-
-    watch: {
-        formUser(formStatus) {
-            if (!formStatus) {
-                this.newDisplayName = "";
-                this.errorDisplayName=false;
+        /**
+         * Modifie le nom du display qui est utilisé ou met la valeur à null afin de laisser la possibilité à tout les displays de s'ouvrir 
+         * 
+         * @param {Boolean} editStatus 
+         * @param {String} nameDisplay 
+         */
+        updateDisplayStatus(editStatus, nameDisplay){
+            if(editStatus){
+                this.displayInEdition = nameDisplay;
+            }
+            else if(this.displayInEdition === nameDisplay && !editStatus){
+                this.displayInEdition = null;
             }
         },
 
-    },
-
-    methods: {
         /**
-         * Retourne le display name stocké sur l'instance Firebase
+         * Retourne le display name stocké via l'API Firebase
          * 
          * @returns {String}
          */
          getName() {
             return this.$app.firebase_user.displayName;
-        }
+        },
     },
 
-    components: { UserImage, AuthProviderInfo, PasswordUpdate, DisplayNameForm },
+    components: { AuthProviderInfo, DisplayNameForm, ManagePassword, DisplayAvatar },
 
     beforeUnmount() {
         this.$app.clearEventListener("display-name-updated");
