@@ -25,7 +25,8 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <h2 class="dropdown-header">{{local_user.login.pseudo}}</h2>
-                <a class="dropdown-item" href="/mkg/modules/espace/private/php/login_3_resume.php?login_id={sess_login_id}" target="espaceApp">Mon compte</a>
+                <!-- <a class="dropdown-item" href="/mkg/modules/espace/private/php/login_3_resume.php?login_id={sess_login_id}" target="espaceApp">Mon compte</a> -->
+                <a class="dropdown-item" @click.prevent="userModal()" href="#!">Mon compte</a>
                 <a class="dropdown-item" @click.prevent="logout()" href="#!">Déconnexion</a>
 
                 <div class="user-menu-options-tools" v-if="cfg.ppp == 'private'">
@@ -56,6 +57,7 @@
             </div>
         </li>
     </ul>
+
 </template>
 
 <style scoped>
@@ -88,6 +90,7 @@ import UserImage from './UserImage.vue'
 import AppOptionsMenu from './AppOptionsMenu.vue';
 import AppStructureMenuItem from './AppStructureMenuItem.vue';
 
+
 /**
  * Header menu component
  * 
@@ -102,6 +105,11 @@ import AppStructureMenuItem from './AppStructureMenuItem.vue';
  * @event {Integer} structure-change
  */
 export default {
+    data() {
+        return {
+			displayModal: false
+        };
+    },
     props: {
         local_user: Object,
         active_structure_id: Number,
@@ -113,6 +121,7 @@ export default {
     emits: ['storage-modal', 'config-module', 'structure-change', 'licence-modal'],
 
     components: { UserImage, AppOptionsMenu, AppStructureMenuItem },
+    
 
     computed: {
         /**
@@ -183,6 +192,14 @@ export default {
                     alert("Vous ne disposez pas d'autres licences pour ce compte");
                 }
             })
+        },
+
+        /**
+         * Envoie un événement 'user-modal' pour afficher le formulaire de modification 
+         * de l'utilisateur connecté
+         */
+        userModal() {
+            this.$emit('user-modal');
         }
     }
 }
