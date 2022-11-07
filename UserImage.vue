@@ -1,7 +1,14 @@
 <template>
-    <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-if="imageUrl" :class="classList"></span>
-    <span class="user-image" :style="'background-color:'+name.toColor()+';'" v-else :class="classList">
-        {{name[0].toUpperCase()}}
+    <div v-if="display == 'full'" class="my-2 text-center">
+        <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-if="imageUrl" :class="classList"></span>
+        <span class="user-image" :style="'background-color:'+finalName.toColor()+';'" v-else :class="classList">
+            {{finalName[0].toUpperCase()}}
+        </span>
+        <div class="mt-2" :class="classNameUsername">{{finalName}}</div>
+    </div>
+    <span class="user-image" :style="'background-image:url('+imageUrl+');'" v-else-if="imageUrl" :class="classList"></span>
+    <span class="user-image" :style="'background-color:'+finalName.toColor()+';'" v-else :class="classList">
+        {{finalName[0].toUpperCase()}}
     </span>
 </template>
 
@@ -37,9 +44,10 @@
 }
 
 .user-image-xl {
-    width:128px; height:128px;
-    line-height: 128px; 
-    min-width: 128px; min-height: 128px;
+    width:96px; height:96px;
+    line-height: 96px; 
+    min-width: 96px; min-height: 96px;
+    font-size: 32px;
 }
 </style>
 
@@ -48,7 +56,8 @@
 import stc from 'string-to-color'
 
 String.prototype.toColor = function() {
-    return stc(this);
+    if (this === '?') return '#aaaaaa';
+    else return stc(this);
 };
 
 export default {
@@ -56,12 +65,52 @@ export default {
         size: String,
         className: String,
         name: String,
-        imageUrl: String
+        imageUrl: String,
+        display: {
+            type: String,
+            default: 'image'
+        },
+        classNameUsername: {
+            type: String,
+            default: ''
+        }
     },
 
     computed: {
+        /** 
+         * Retourne la liste de class a ajouter
+         * size posible: 'xs','sm','lg', 'xl' 
+         * 
+         * @return String
+         */
         classList() {
-            return this.size+' '+this.className;
+            let classList = '';
+
+            if(this.size) {
+                if(this.size.search(/user-image-/) != -1) {
+                    classList += this.size
+                } else {
+                    classList += 'user-image-' + this.size;
+                }
+            }
+
+            if(this.className) {
+                classList += ' ' + this.className;
+            }
+
+            return classList;
+        },
+
+
+        /**
+         * Transforme la data name en une chaine de caractère obligatoire. Si name est null
+         * ou undefined alors on retourne la chaine '?'
+         * 
+         * @returns {String}
+         */
+        finalName() {
+
+            return typeof this.name === 'string' ? this.name : '?';
         }
     }
 }

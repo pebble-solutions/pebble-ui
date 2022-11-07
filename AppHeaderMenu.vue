@@ -24,7 +24,7 @@
             {{cfg.moduleLabel}}
         </span>
 
-        <div class="apps-menu-sidebar" :class="{active : appsLauncher}" v-if="cfg.aside">
+        <div class="apps-menu-sidebar" :class="{active : appsLauncher}" v-if="cfg.aside && !isMobile">
             <div v-if="!pending.modules && modules && cfg.app_mode != 'standalone'">
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -157,7 +157,7 @@ export default {
             search_results: {
                 modules: []
             },
-            winWidth : 0
+            winWidth: 0
         }
     },    
     watch: {
@@ -317,12 +317,12 @@ export default {
          */
         mobileMenuSize() {
             if(this.winWidth < 1024) {
-                if(this.cfg.aside) {
+                if(this.cfg.aside && !this.isMobile) {
                     return '312px';
                 }
                 return '260px';
             } else {
-                if(this.cfg.aside) {
+                if(this.cfg.aside && !this.isMobile) {
                     return '402px';
                 } else {
                     return '350px';
@@ -332,6 +332,17 @@ export default {
             //return '350px';
         },
         // EO paddingLeft()
+
+        /**
+         * Retourn true si la taille correspond a une taille mobile
+         */
+        isMobile() {
+            if(this.winWidth > 578) {
+                return false;
+            }
+
+            return true;
+        },
 
         /**
          * Retourne true si la route active est l'index
@@ -441,7 +452,7 @@ export default {
             } else {
                 return '';
             }
-        },
+        }
     },
     updated() {
         if(this.appsLauncher) {
@@ -457,7 +468,11 @@ export default {
 
         window.addEventListener('resize', () => {
             this.winWidth = window.innerWidth;
+
+            this.$emit('update-sidebar', this.isMobile);
         });
+
+        this.$emit('update-sidebar', this.isMobile);
     }
 }
 </script>

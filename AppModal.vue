@@ -17,7 +17,7 @@
 -->
 
 <template>
-    <div class="modal fade" :id="id+'Modal'" tabindex="-1" :aria-labelledby="id+'ModalLabel'" aria-hidden="true">
+    <div class="modal fade" :id="id+'Modal'" tabindex="-1" :aria-labelledby="id+'ModalLabel'" aria-hidden="true" :data-bs-backdrop="backdrop">
         <div class="modal-dialog" :class="classList">
             <form method="post" @submit.prevent="$emit('submit')" class="modal-content">
                 <div class="modal-header">
@@ -28,7 +28,7 @@
                     <slot></slot>
                 </div>
                 <div class="modal-footer" v-if="footer">
-                    <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()"><i class="bi bi-trash"></i></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="cancelBtn">Annuler</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="closeBtn">Fermer</button>
                     <button type="submit" class="btn btn-primary" :disabled="pending" v-if="submitBtn">
@@ -58,8 +58,9 @@ import * as bootstrap from "bootstrap"
  * @param {Boolean} submitBtn
  * @param {Boolean} deleteBtn
  * @param {Boolean} pending
- * @param {String} size
+ * @param {String} size         Rien, lg, md, sm
  * @param {Boolean} footer
+ * @param {String|Boolean} backdrop
  *
  * @event submit {void}
  * @event delete {void}
@@ -94,6 +95,10 @@ export default {
         submitLabel : {
             default : "Enregistrer",
             type : String
+        },
+        backdrop: {
+            type: [String, Boolean],
+            default: true
         }
     },
 

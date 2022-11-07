@@ -21,10 +21,11 @@
             :cfg-slots="cfgSlots"
             :local_user="local_user"
 
+            @update-sidebar="updateSidebar"
             @menu-toggle="menu = !menu"
             @config-module="$emit('config-menu')" />
 
-        <div class="col d-flex align-items-center justify-content-between">
+        <div class="col d-flex align-items-center justify-content-between" :class="classHeader">
             <div>
                 <slot name="header" v-if="slots.header"></slot>
             </div>
@@ -35,19 +36,22 @@
                     :cfg-menu="cfgMenu"
                     :cfg="cfg"
                     :local_user="local_user"
+                    :licence="licence"
                     :active_structure_id="active_structure_id"
 
                     @config-module="$emit('config-menu')"
                     @storage-modal="storageModal = true"
-                    @structure-change="activateStructure" />
+                    @licence-modal="licenceModal = true"
+                    @structure-change="activateStructure"
+                    @user-modal="userModal = true" />
             </div>
             <!-- Fin de la barre d'outil IT Cloud -->
         </div>
     </div>
 
     <div class="row g-0" :class="{'filter-blur' : !local_user && cfg.ppp !== 'public'}" :style="'padding-left:'+paddingLeft+';'">
-        <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
-            <div class="btn-group rounded-0 w-100 p-1 sticky-top bg-light shadow-sm border-bottom border-light" role="group" aria-label="Basic radio toggle button group" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'">
+        <div class="col border-end overflow-auto scrollbar sidebar-full-height sticky-top pebble-aside-menu shadow-sm" :class="{'menu-opened': menu, 'bg-light': menuMode == 'list', 'bg-dark text-light': menuMode == 'menu'}" id="app-list"  v-if="slots.menu || slots.list">
+            <div class="btn-group rounded-0 w-100 p-1 sticky-top shadow-sm border-bottom" v-if="slots.menu && slots.list  && cfg.app_mode != 'standalone'" :class="{'bg-light border-light': menuMode == 'list', 'bg-dark border-dark': menuMode == 'menu'}">
                 <input type="radio" class="btn-check" name="menuMode" id="menuMode-menu" autocomplete="off" v-model="menuMode" value="menu">
                 <label class="btn btn-outline-custom w-50" for="menuMode-menu">
                     <i class="bi bi-three-dots-vertical"></i>
@@ -65,29 +69,40 @@
             <slot name="list" v-else-if="menuMode == 'list' || slots.list"></slot>
         </div>
 
-        <div class="col overflow-auto"  v-if="slots.core">
+        <div class="col" :class="classCore" v-if="slots.core">
             <slot name="core"></slot>
 
             <div class="app-footer" id="app-footer">
                 <div class="mb-2">
-                    <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Work less, do more" alt="Pebble" style="max-width: 48px;">
+                    <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Pebble: Work less, do more" alt="Pebble" style="max-width: 48px;">
+                    <div v-if="env != 'prod'"><code>Environnement {{env}}</code></div>
                 </div>
-                <small class="d-block">Pebble  Version 5</small>
             </div>
         </div>
     </div>
 
-    <LoginModal v-if="!local_user && cfg.ppp !== 'public'" @auth-change="setLocal_user" @structure-change="setActiveStructureId" />
+    <LoginModal v-if="!local_user && !pending.initAuth && cfg.ppp !== 'public'" />
 
-    <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" />
+    <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" v-if="cfg.ppp == 'private'" />
+
+    <AppModal v-if="licenceModal" :display="true" :footer="false" title="Licence" id="licenceOverview" @modal-hide="licenceModal = false">
+        <LicenceOverview :licence="licence" />
+    </AppModal>
+
+    <AppModal title="Mon compte" v-if="userModal" :display="true" :footer="false" id="accountOverview" @modal-hide="userModal = false">
+        <UserForm />
+    </AppModal>
 </template>
 
 <script>
 
 import AppHeaderMenu from './AppHeaderMenu.vue'
 import AppHeaderUserMenu from './AppHeaderUserMenu.vue'
-import LoginModal from './LoginModal.vue'
+import LoginModal from './login/LoginModal.vue'
 import StorageModal from './StorageModal.vue'
+import AppModal from './AppModal.vue'
+import LicenceOverview from './licence/LicenceOverview.vue'
+import UserForm from './user/UserForm.vue'
 
 /**
  * Application wrapper component
@@ -105,16 +120,27 @@ export default {
     props: {
         cfg: Object,
         cfgMenu: Object,
-        cfgSlots: Object
+        cfgSlots: {
+            type: Object,
+            default() {
+                return {
+                    menu: true,
+                    list: true,
+                    core: true,
+                    header: true
+                }
+            }
+        }
     },
 
-    emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change'],
+    emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change', 'config-menu'],
 
     data() {
         return {
             pending: {
                 structures: true,
-                sessLogin: true
+                sessLogin: true,
+                initAuth: true
             },
             menu: false,
             menuMode : 'list',
@@ -126,17 +152,16 @@ export default {
             },
             local_user: null,
             active_structure_id: null,
-            storageModal: false
+            storageModal: false,
+            licenceModal: false,
+            licence: null,
+            isMobile : false,
+            env: null,
+            userModal: false
         }
     },
 
-    components: {
-        // Chargement des dépenses externes
-        AppHeaderMenu,
-        AppHeaderUserMenu,
-        LoginModal,
-        StorageModal
-    },
+    components: { AppHeaderMenu, AppHeaderUserMenu, LoginModal, StorageModal, AppModal, LicenceOverview, UserForm },
 
     watch: {
         /**
@@ -160,14 +185,41 @@ export default {
          * @returns {String}
          */
         paddingLeft() {
-            if (this.cfg.aside) {
+            if (this.cfg.aside && !this.isMobile) {
                 return '52px';
             }
             else {
                 return '0px';
             }
         },
-        // EO paddingLeft()
+        
+        /**
+         * Retourne la classe pour l'élément d'interface "core"
+         */
+        classCore() {
+            return this.getClassName('core');
+        },
+
+        /**
+         * Retourne la classe pour l'élément d'interface "sidebar"
+         */
+        classSidebar() {
+            return this.getClassName('sidebar');
+        },
+
+        /**
+         * Retourne la classe pour l'élément d'interface "header"
+         */
+        classHeader() {
+            return this.getClassName('header');
+        },
+
+        /**
+         * Retourne les options complémentaires de configuration des slots
+         */
+        slotsOptions() {
+            return this.cfgSlots.options ? this.cfgSlots.options : {};
+        }
     },
 
     methods: {
@@ -216,6 +268,27 @@ export default {
         activateStructure(structureId) {
             this.$app.setStructure(structureId);
             this.setActiveStructureId(structureId);
+        },
+
+        /**
+         * Met a jour la variable isMobile a true si la taille est une taille mobile,
+         * défini dans AppHeaderMenu
+         * @param {Boolean} isMobile 
+         */
+        updateSidebar(isMobile) {
+            this.isMobile = isMobile;
+        },
+
+        /**
+         * Retourne le nom de la classe CSS pour un slot donné depuis la configuration.
+         * @param {String} slot Le nom du slot
+         * @returns {String}
+         */
+        getClassName(slot) {
+            if (this.slotsOptions[slot]) {
+                return this.slotsOptions[slot].className ? this.slotsOptions[slot].className : '';
+            }
+            return '';
         }
     },
     
@@ -228,13 +301,17 @@ export default {
             this.menuMode = 'list';
         }
 
+        if (this.cfg.menuMode) {
+            this.menuMode = this.cfg.menuMode;
+        }
+
         this.resize();
 
         window.addEventListener('resize', () => {
             this.resize();
         });
 
-        this.$app.addEventListener('authCleared', () => {
+        this.$app.addEventListener('licenceCleared', () => {
             this.setLocal_user(null);
             this.setActiveStructureId(null);
             this.$router.push('/');
@@ -252,7 +329,25 @@ export default {
             this.setActiveStructureId(structureId);
         });
 
+        this.$app.addEventListener('menuChanged', (status) => {
+            this.menuMode = status;
+        });
+
+        this.$app.addEventListener('licenceChanged', (licence) => {
+            this.licence = licence;
+        })
+
+        this.$app.addEventListener('authInited', () => {
+            this.pending.initAuth = false;
+        });
+
+        this.$app.addEventListener('authError', () => {
+            this.pending.initAuth = false;
+        });
+
         this.$app.checkAuth();
+
+        this.env = this.$app.env;
 
     }
 };
@@ -428,7 +523,6 @@ export default {
 
 .pebble-aside-menu {
     display: none;
-
 }
 
 .pebble-aside-menu.menu-opened {
@@ -438,6 +532,7 @@ export default {
     bottom : 0px;
     width: 100%!important;
     max-width: 260px;
+    z-index:1100;
 }
 
 .pebble-cursor-pointer {

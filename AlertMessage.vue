@@ -1,6 +1,6 @@
 <template>
-    <div class="alert text" :class="classList()" role="alert">
-        <i v-if="icon" class="m-2 bi" :class="icon"></i>
+    <div class="alert" :class="classList()" role="alert">
+        <i v-if="icon" class="me-3 bi" :class="icon"></i>
         
         <slot></slot>
 
@@ -33,7 +33,7 @@ export default {
          * @return {String}
          */
         classList() {
-            let classStringList="";
+            let classStringList = "";
 
             if(this.variant) {
                 classStringList += ' alert-'+ this.variant;
@@ -41,6 +41,10 @@ export default {
 
             if(this.dismissible) {
                 classStringList += ' alert-dismissible'
+            }
+
+            if (this.icon) {
+                classStringList += ' d-flex align-items-center';
             }
 
             return classStringList;
