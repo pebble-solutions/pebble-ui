@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" :class="className">
+    <div class="d-flex align-items-center justify-content-center shadow-sm my-3 mx-3 rounded limitWidth" :class="className">
         <slot></slot>
     </div>
 </template>
@@ -9,7 +9,7 @@ export default {
     props: {
         className: {
             type: String,
-            default: ""
+            default: "bg-light"
         }
     }
 }

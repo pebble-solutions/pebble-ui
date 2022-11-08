@@ -1,14 +1,18 @@
 <template>
     <div :class="className" v-if="title">{{title}}</div>
-    <div v-if="pending">.....</div>
-    <div class="d-flex gap-2 py-3" v-else>
-        <button class="btn btn-lg btn-success bg-gradient" @click.prevent="confirm()" v-if="successLabel">
-            {{successLabel}}
-        </button>
-        
-        <button class="btn btn-lg btn-danger bg-gradient" @click.prevent="cancel()" v-if="cancelLabel">
-            {{cancelLabel}}
-        </button>
+    <div class="py-3">
+        <div class="spinner-border" role="status" v-if="pending">
+            <span class="visually-hidden">Enregistrement...</span>
+        </div>
+        <div class="d-flex gap-2" v-else>
+            <button class="btn btn-lg btn-success" @click.prevent="confirm()" v-if="successLabel">
+                {{successLabel}}
+            </button>
+            
+            <button class="btn btn-lg btn-danger" @click.prevent="cancel()" v-if="cancelLabel">
+                {{cancelLabel}}
+            </button>
+        </div>
     </div>
 </template>
 

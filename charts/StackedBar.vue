@@ -6,7 +6,7 @@
             aria-valuemax="100" aria-valuemin="0" :aria-valuenow="bar.value"
             :style="'width:'+bar.percent+'%'">
 
-            <div>
+            <div v-if="bar.displayValue">
                 <span v-if="percentage">{{bar.percent}}%</span>
                 <span v-else>{{bar.value}}</span>
             </div>
@@ -83,6 +83,10 @@ export default {
 
             this.Appbars.forEach(bar => {
                 bar.percent = ((bar.value*100) / this.total).toFixed(0);
+
+                if (typeof bar.displayValue === 'undefined') {
+                    bar.displayValue = true;
+                }
             });
 
             this.waitData = false;
