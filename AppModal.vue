@@ -36,7 +36,7 @@
                             <span class="spinner-border spinner-border-sm" role="status"></span>
                             Enregistrement...
                         </span>
-                        <span v-else>Enregistrer</span>
+                        <span v-else>{{submitLabel}}</span>
                     </button>
                 </div>
             </form>
@@ -91,6 +91,10 @@ export default {
         footer: {
             type: Boolean,
             default: true
+        },
+        submitLabel : {
+            default : "Enregistrer",
+            type : String
         },
         backdrop: {
             type: [String, Boolean],
