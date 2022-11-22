@@ -1,6 +1,6 @@
 <template>
     <a :href="cfgMenu.href" class="dropdown-item" @click.prevent="configModule()" v-if="cfgMenu.href">Configuration du module</a>
-    <a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp">Configuration générale</a>
+    <!--<a href="/mkg/modules/parametre/private/php/index.php" class="dropdown-item" target="parametreApp">Configuration générale</a>-->
     <button class="dropdown-item" @click.prevent="storageModal()">Data viewer</button>
 </template>
 

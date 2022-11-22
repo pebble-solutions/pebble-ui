@@ -564,32 +564,37 @@ export default {
     color:#a012ff;
 }
 
-.btn-admin {
-    background-color: #a012ff;
-    border-color: #6f09b3;
+.text-bg-admin {
+    background-color:#a012ff;
     color:white;
+}
+
+.btn-admin {
+    background-color: #a012ff !important;
+    border-color: #6f09b3 !important;
+    color:white !important;
 }
 
 .btn-admin:hover {
-    background-color: #8a10db;
-    border-color: #60099b;
-    color:white;
+    background-color: #8a10db !important;
+    border-color: #60099b !important;
+    color:white !important;
 }
 
 .btn-outline-admin {
-    border-color: #a012ff;
-    color:#a012ff;
+    border-color: #a012ff !important;
+    color:#a012ff !important;
 }
 
 .btn-outline-admin:hover {
-    border-color: #a012ff;
-    color:white;
-    background-color: #8a10db;
+    border-color: #a012ff !important;
+    color:white !important;
+    background-color: #8a10db !important;
 }
 
 .btn-admin:focus,
 .btn-outline-admin:focus {
-    box-shadow: 0 0 0 0.2rem rgba(160, 18, 255, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(160, 18, 255, 0.5) !important;
 }
 
 .app-footer {
