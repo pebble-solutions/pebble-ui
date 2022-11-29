@@ -349,6 +349,8 @@ export default {
 
         this.env = this.$app.env;
 
+        document.title = this.$app.cfg.moduleLabel;
+
     }
 };
 </script>

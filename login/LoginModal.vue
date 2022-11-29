@@ -12,11 +12,16 @@
                     <AlertMessage v-if="error" icon="bi bi-exclamation-circle-fill" variant="danger">{{error}}</AlertMessage>
 
                     <LicenceSelector :licences="licences" v-if="view == 'licence'" @error="setError" />
+
                     <LoginForm :display-error="false" @error="setError" v-else />
 
                     <div class="text-center mt-3 pt-3 mb-2">
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
-                        <div v-if="env != 'prod'"><code>Environnement {{env}}</code></div>
+                        <div v-if="env != 'prod'">
+                            <code>Environnement {{env}}</code><br>
+                            <code v-if="pas">Connexion via PAS sur {{api.authServer}}</code>
+                            <code v-else>Connexion via Firebase</code>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -26,11 +31,12 @@
 
 <script>
 
-import * as bootstrap from "bootstrap"
-import LoginForm from "./LoginForm.vue"
+import * as bootstrap from "bootstrap";
+import LoginForm from "./LoginForm.vue";
 import LicenceSelector from "../licence/LicenceSelector.vue";
 import UserImage from "../UserImage.vue";
 import AlertMessage from "../AlertMessage.vue";
+import { LicenceNotFoundError } from "../../../js/app/errors";
 
 /**
  * Ce composant affiche une boite de dialogue afin de se connecter à un compte utilisateur.
@@ -51,7 +57,9 @@ export default {
             view: 'form',
             user: null,
             error: null,
-            env: null
+            env: null,
+            pas: null,
+            api: null
         };
     },
 
@@ -86,7 +94,13 @@ export default {
                 this.view = 'form';
             }
 
-            this.setError(null);
+            if (this.user && !this.licences.length) {
+                let er = new LicenceNotFoundError();
+                this.error = er.message;
+            }
+            else {
+                this.setError(null);
+            }
         }
     },
 
@@ -124,6 +138,8 @@ export default {
         });
 
         this.env = this.$app.env;
+        this.pas = this.$app.pas;
+        this.api = this.$app.api;
     },
 
     components: { LoginForm, LicenceSelector, UserImage, AlertMessage }
