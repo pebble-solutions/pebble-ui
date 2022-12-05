@@ -36,7 +36,7 @@ import LoginForm from "./LoginForm.vue";
 import LicenceSelector from "../licence/LicenceSelector.vue";
 import UserImage from "../UserImage.vue";
 import AlertMessage from "../AlertMessage.vue";
-import { LicenceNotFoundError } from "../../../js/app/errors";
+// import { LicenceNotFoundError } from "../../../js/app/errors";
 
 /**
  * Ce composant affiche une boite de dialogue afin de se connecter à un compte utilisateur.
@@ -94,13 +94,13 @@ export default {
                 this.view = 'form';
             }
 
-            if (this.user && !this.licences.length) {
-                let er = new LicenceNotFoundError();
-                this.error = er.message;
-            }
-            else {
-                this.setError(null);
-            }
+            // if (this.user && !this.licences.length) {
+            //     let er = new LicenceNotFoundError();
+            //     this.error = er.message;
+            // }
+            // else {
+            //     this.setError(null);
+            // }
         }
     },
 
@@ -118,6 +118,7 @@ export default {
         this.initView();
         
         this.$app.addEventListener("licencesRetrieved", (licences) => {
+            this.user = this.$app.firebase_user;
             this.licences = licences;
             this.initView();
         });
