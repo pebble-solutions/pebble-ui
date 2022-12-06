@@ -19,8 +19,7 @@
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
                         <div v-if="env != 'prod'">
                             <code>Environnement {{env}}</code><br>
-                            <code v-if="pas">Connexion via PAS sur {{api.authServer}}</code>
-                            <code v-else>Connexion via Firebase</code>
+                            <code v-if="apiConfig">Pebble Authenticator sur {{apiConfig.authServer}}</code>
                         </div>
                     </div>
                 </div>
@@ -58,8 +57,7 @@ export default {
             user: null,
             error: null,
             env: null,
-            pas: null,
-            api: null
+            apiConfig: null
         };
     },
 
@@ -139,8 +137,7 @@ export default {
         });
 
         this.env = this.$app.env;
-        this.pas = this.$app.pas;
-        this.api = this.$app.api;
+        this.apiConfig = this.$app.apiConfig;
     },
 
     components: { LoginForm, LicenceSelector, UserImage, AlertMessage }

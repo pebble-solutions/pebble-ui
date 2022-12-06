@@ -37,7 +37,7 @@
 
                 <hr class="dropdown-divider">
                 <h2 class="dropdown-header">Licence</h2>
-                <button class="dropdown-item" @click.prevent="$emit('licence-modal')">{{licence.getComputedName()}}</button>
+                <button class="dropdown-item" @click.prevent="$emit('licence-modal')">{{licence.computedName}}</button>
                 <button class="dropdown-item" @click.prevent="switchLicence()">Autres licences</button>
 
                 <div class="user-menu-options-tools" v-if="cfg.ppp == 'private'">

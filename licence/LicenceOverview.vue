@@ -1,5 +1,5 @@
 <template>
-    <h3>{{licence.getComputedName()}}</h3>
+    <h3>{{licence.computedName}}</h3>
     <p v-if="licence.description">
         {{licence.description}}
     </p>

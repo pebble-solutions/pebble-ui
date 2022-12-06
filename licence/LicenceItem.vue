@@ -2,7 +2,7 @@
     
     <button class="list-group-item list-group-item-action d-flex align-items-center justify-content-between" @click.prevent="$emit('select-licence', licence)" :disabled="disabled">
         <div>
-            <strong class="d-block">{{licence.getComputedName()}}</strong>
+            <strong class="d-block">{{licence.computedName}}</strong>
             <span class="d-block font-monospace text-secondary">{{licence._id}}</span>
             <em class="d-block" v-if="licence.description">{{licence.description}}</em>
         </div>
