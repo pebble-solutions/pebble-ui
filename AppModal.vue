@@ -44,6 +44,16 @@
     </div>
 </template>
 
+<style lang="scss">
+@import "@/_variables.scss";
+
+.headerBackgroundTheme {
+    background-color: $theme-color;
+    color: white;
+    box-shadow: $theme-color 0px 15px 20px -15px;
+}
+</style>
+
 <script>
 
 import * as bootstrap from "bootstrap"
