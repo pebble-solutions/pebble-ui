@@ -4,15 +4,16 @@
             <span class="apps-menu-icon apps-menu-icon-bi"><i class="bi bi-arrow-left text-white"></i></span>
         </a>
 
-        <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else-if="cfg.app_mode != 'standalone' && cfg.ppp == 'private'">
-            <i v-if="cfg.logos" class="apps-menu-icon"><img :src="getLogo()" alt="Pebble"></i>
-            <i v-else class="apps-menu-icon apps-menu-icon-apps"></i>
-        </a>
-
-        <span class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" v-else>
+        <span class="apps-menu-btn me-3" title="Toutes les applications" v-else>
             <i v-if="cfg.logos" class="apps-menu-icon"><img :src="getLogo()" alt="Pebble"></i>
             <i v-else class="apps-menu-icon apps-menu-icon-apps"></i>
         </span>
+
+        <!-- <a class="apps-menu-btn me-3" href="/admin" title="Toutes les applications" @click.prevent="appsLauncher = !appsLauncher" v-else-if="cfg.app_mode != 'standalone' && cfg.ppp == 'private'">
+            <i v-if="cfg.logos" class="apps-menu-icon"><img :src="getLogo()" alt="Pebble"></i>
+            <i v-else class="apps-menu-icon apps-menu-icon-apps"></i>
+        </a> -->
+
 
 
         <a href="#!" class="navbar-brand text-light " v-if="burgerMenu" @click.prevent="menu = !menu" title="Menu application">
