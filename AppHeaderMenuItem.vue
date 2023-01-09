@@ -10,11 +10,12 @@
 -->
 <template>
     <li class="apps-menu-sidebar-el">
-        <a :href="'/mkg/modules/'+module.module+'/private/php/'" class="apps-menu-sidebar-item text-light rounded" :class="{'active' : cfg.active, 'bg-primary border border-primary': firstSearchResult}" :title="module.name">
-            <i :class="module.faIcon+' app-icon'"></i>
-            <span class="app-label">{{module.name}}</span>
-            <small class="d-block" v-if="firstSearchResult"><em>Touche Entrée pour lancer</em></small>
-        </a>
+        <router-link :to="item.href" v-slot="{href, navigate, isActive}" custom>
+            <a :href="href" @click="navigate" class="apps-menu-sidebar-item text-light rounded" :class="{'active': isActive}" :title="item.label">
+                <i :class="item.icon+' app-icon'"></i>
+                <span class="app-label">{{item.label}}</span>
+            </a>
+        </router-link>
     </li>
 </template>
 
@@ -23,24 +24,11 @@
 /**
  * Header menu component
  * 
- * @param {Object} module
- * @param {Object} cfg
+ * @param {Object} item
  */
 export default {
     props: {
-        module: Object,
-        cfg: Object
-    },
-    
-    computed: {
-        /**
-         * firstSearchResult()
-         * Retourne True si c'est le premier résultat de la recherche.
-         * @returns {Boolean}
-         */
-        firstSearchResult() {
-            return (this.cfg.i == 0 && this.cfg.provider == 'search');
-        }
+        item: Object
     }
 }
 

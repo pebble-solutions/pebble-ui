@@ -20,6 +20,7 @@
             :cfg-menu="cfgMenu"
             :cfg-slots="cfgSlots"
             :local_user="local_user"
+            :sidebar-menu="sidebarMenu"
 
             @update-sidebar="updateSidebar"
             @menu-toggle="menu = !menu"
@@ -110,6 +111,7 @@ import UserForm from './user/UserForm.vue'
  * @param {Object} cfg
  * @param {Object} cfgMenu
  * @param {Object} cfgSlots
+ * @param {Array} sidebarMenu
  *
  * @event menu-toggle {Boolean}
  * @event config-module {Void}
@@ -130,7 +132,8 @@ export default {
                     header: true
                 }
             }
-        }
+        },
+        sidebarMenu: Array
     },
 
     emits: ['auth-change', 'menu-toggle', 'config-module', 'structure-change', 'config-menu'],
@@ -495,7 +498,7 @@ export default {
 }
 
 .apps-menu-sidebar-item {
-    display:block;
+    display:flex;
     padding:10px 0px;
     text-decoration: none;
     text-transform: capitalize;
