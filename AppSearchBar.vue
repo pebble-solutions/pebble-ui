@@ -83,7 +83,6 @@ export default {
          * @event searchValue
          */
         updateSearchValue() {
-            console.log('update:', this.eventValue);
             this.$emit('update:searchValue', this.eventValue);
         }
     },
