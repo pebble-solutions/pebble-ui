@@ -19,9 +19,10 @@
 
     <div class=" d-flex">
         <div class="input-group m-2">
-            <input  type="text" class="form-control" placeholder="rechercher" :value="searchValue" @input="$emit('update:searchValue', $event.target.value)" >
+            <input  type="text" class="form-control" placeholder="rechercher" :value="searchValue" @input="eventValue = $event.target.value">
+            <!-- @input="$emit('update:searchValue', $event.target.value)" -->
 
-            <button class="btn btn-outline-secondary input-group-text" type="submit">
+            <button class="btn btn-outline-secondary input-group-text" type="submit" @click="updateSearchValue()">
                 <i class="bi bi-search"></i>
             </button>
 
@@ -53,6 +54,12 @@ export default {
         }
     },
 
+    data() {
+        return {
+            eventValue: null,
+        }
+    },
+
     emits: ['update:showFilter', 'update:searchValue'],
 
     computed: {
@@ -67,7 +74,18 @@ export default {
 
             return 'btn-'+outline+type;
         }
-    },    
+    },
+
+    methods: {
+        /**
+         * Renvoi searchValue pour Met a jour la variable au niveau du parent
+         * 
+         * @event searchValue
+         */
+        updateSearchValue() {
+            this.$emit('update:searchValue', this.eventValue);
+        }
+    },
 }
 
 </script>
