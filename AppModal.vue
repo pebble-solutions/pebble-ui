@@ -73,6 +73,7 @@ import * as bootstrap from "bootstrap"
  * @param {Boolean} footer
  * @param {String|Boolean} backdrop
  * @param {Boolean} pendingDelete
+ * @param {String} submitLabel
  *
  * @event submit {void}
  * @event delete {void}
