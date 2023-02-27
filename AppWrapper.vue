@@ -74,8 +74,9 @@
             <slot name="core"></slot>
 
             <div class="app-footer" id="app-footer">
-                <div class="mb-2">
+                <div class="mb-2 fs-7">
                     <img src="@/components/pebble-ui/assets/pebble-dark-64.png" title="Pebble: Work less, do more" alt="Pebble" style="max-width: 48px;">
+                    <div class="text-secondary my-1">{{ appName }} {{ appVersion }}</div>
                     <div v-if="env != 'prod'"><code>Environnement {{env}}</code></div>
                 </div>
             </div>
@@ -104,6 +105,7 @@ import StorageModal from './StorageModal.vue'
 import AppModal from './AppModal.vue'
 import LicenceOverview from './licence/LicenceOverview.vue'
 import UserForm from './user/UserForm.vue'
+import {version, name} from '../../../package.json'
 
 /**
  * Application wrapper component
@@ -222,6 +224,22 @@ export default {
          */
         slotsOptions() {
             return this.cfgSlots.options ? this.cfgSlots.options : {};
+        },
+
+        /**
+         * Retourne le nom de l'application déclarée dans package.json
+         * @return {string}
+         */
+        appName() {
+            return name;
+        },
+
+        /**
+         * Retourne la version de l'application déclarée dans package.json
+         * @return {string}
+         */
+        appVersion() {
+            return version;
         }
     },
 
