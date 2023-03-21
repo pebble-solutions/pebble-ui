@@ -1,5 +1,5 @@
 <template>
-    <div class="alert" :class="classList()" role="alert">
+    <div class="alert" :class="classList" role="alert">
         <i v-if="icon" class="me-3 bi" :class="icon"></i>
         
         <slot></slot>
@@ -23,12 +23,13 @@ export default {
         icon: {
             type: String,
             default: ""
-        }
+        },
+        className: String
     },
 
-    methods: {
+    computed: {
         /**
-         * Ajout une liste de class
+         * Retourne la liste des classes en fonction des propriétés passées
          * 
          * @return {String}
          */
@@ -45,6 +46,10 @@ export default {
 
             if (this.icon) {
                 classStringList += ' d-flex align-items-center';
+            }
+
+            if (this.className) {
+                classStringList += ' '+this.className;
             }
 
             return classStringList;

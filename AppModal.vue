@@ -10,6 +10,7 @@
     - submit-btn                Si true, affiche un bouton Enregistrer
     - delete-btn                Si true, affiche un bouton Enregistrer
     - pending                   Si true, l'enregistrement est en cours
+    - pending-delete            Si true, la suppression est en cours
 
     Événements émits :
     - submit                    Événement envoyé au parent lorsque le formulaire est soumis
@@ -28,7 +29,7 @@
                     <slot></slot>
                 </div>
                 <div class="modal-footer" v-if="footer">
-                    <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()"><i class="bi bi-trash"></i></button>
+                    <button type="button" class="btn btn-outline-danger" v-if="deleteBtn" @click="deleteData()" :disabled="pendingDelete"><i class="bi bi-trash"></i></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="cancelBtn">Annuler</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-if="closeBtn">Fermer</button>
                     <button type="submit" class="btn btn-primary" :disabled="pending" v-if="submitBtn">
@@ -71,6 +72,8 @@ import * as bootstrap from "bootstrap"
  * @param {String} size         Rien, lg, md, sm
  * @param {Boolean} footer
  * @param {String|Boolean} backdrop
+ * @param {Boolean} pendingDelete
+ * @param {String} submitLabel
  *
  * @event submit {void}
  * @event delete {void}
@@ -86,6 +89,10 @@ export default {
         submitBtn: Boolean,
         deleteBtn: Boolean,
         pending: Boolean,
+        pendingDelete: {
+            type: Boolean,
+            default: false
+        },
         display: {
             type: Boolean,
             default: true
