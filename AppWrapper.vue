@@ -349,7 +349,7 @@ export default {
 
         this.env = this.$app.env;
 
-        document.title = this.$app.cfg.moduleLabel;
+        document.title = this.$app.cfg.moduleLabel+' - Pebble';
 
     }
 };
