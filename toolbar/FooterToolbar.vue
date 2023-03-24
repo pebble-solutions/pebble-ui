@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-items-center justify-content-center shadow-sm my-3 mx-3 rounded limitWidth" :class="className">
+    <div class="limitWidth shadow-sm" :class="classList">
         <slot></slot>
     </div>
 </template>
@@ -10,6 +10,20 @@ export default {
         className: {
             type: String,
             default: "bg-light"
+        },
+
+        wrapperClass: {
+            type: String,
+            default: "d-flex align-items-center justify-content-center my-3 mx-3 rounded px-2 py-1"
+        }
+    },
+
+    computed: {
+        /**
+         * Retourne la liste des classes à appliquer sur l'ensemble du container
+         */
+        classList() {
+            return `${this.className} ${this.wrapperClass}`;
         }
     }
 }
