@@ -105,7 +105,7 @@ import StorageModal from './StorageModal.vue'
 import AppModal from './AppModal.vue'
 import LicenceOverview from './licence/LicenceOverview.vue'
 import UserForm from './user/UserForm.vue'
-import {version, name} from '../../../package.json'
+import packageInfo from '../../../package.json'
 
 /**
  * Application wrapper component
@@ -231,7 +231,7 @@ export default {
          * @return {string}
          */
         appName() {
-            return name;
+            return packageInfo.name;
         },
 
         /**
@@ -239,7 +239,7 @@ export default {
          * @return {string}
          */
         appVersion() {
-            return version;
+            return packageInfo.version;
         }
     },
 
@@ -428,8 +428,8 @@ export default {
 }
 
 .apps-menu-icon-back {
-    mask: url('/mkg/images/svg/left-arrow.svg');
-    -webkit-mask: url('/mkg/images/svg/left-arrow.svg');
+    // mask: url('/mkg/images/svg/left-arrow.svg');
+    // -webkit-mask: url('/mkg/images/svg/left-arrow.svg');
     background:#ffffff;
     mask-size:cover;
     -webkit-mask-size:cover;
