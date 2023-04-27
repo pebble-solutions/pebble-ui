@@ -19,14 +19,14 @@
 
     <div class=" d-flex">
         <div class="input-group m-2">
-            <input  type="text" class="form-control" placeholder="rechercher" :value="searchValue" @input="eventValue = $event.target.value">
-            <!-- @input="$emit('update:searchValue', $event.target.value)" -->
+            <!-- <input  type="text" class="form-control" placeholder="rechercher" :value="searchValue" @input="eventValue = $event.target.value"> -->
+            <input  type="text" class="form-control" placeholder="rechercher" v-model="eventValue">
 
             <button class="btn btn-outline-secondary input-group-text" type="submit" @click="updateSearchValue()">
                 <i class="bi bi-search"></i>
             </button>
 
-            <button v-if="filterOptions" @click.prevent="$emit('update:showFilter',!this.showFilter)" type="button" class="btn input-group-text" :class="filterButtonClass" >
+            <button v-if="filterOptions" @click.prevent="eventFiltre()" type="button" class="btn input-group-text" :class="filterButtonClass" >
                 <i class="bi bi-funnel-fill"></i> 
                 <span v-if="nbFilterActive">{{nbFilterActive}}</span> 
             </button>
@@ -69,10 +69,23 @@ export default {
          * @returns {String}
          */
         filterButtonClass() {
-            let type = this.nbFilterActive ? 'warning' : 'secondary';
-            let outline = this.nbFilterActive ? '': 'outline-';
+            let filter = "";
 
-            return 'btn-'+outline+type;
+            if (this.showFilter) {
+                filter = "btn-secondary";
+            } else {
+                filter = "btn-outline-secondary";
+            }
+
+            if (this.nbFilterActive) {
+                filter = "btn-warning";
+            }
+
+            if (this.nbFilterActive && !this.showFilter) {
+                filter = "btn-outline-warning";
+            }
+
+            return filter;
         }
     },
 
@@ -84,8 +97,19 @@ export default {
          */
         updateSearchValue() {
             this.$emit('update:searchValue', this.eventValue);
+        },
+
+        /**
+         * Affichage du bouton de filtre
+         */
+         eventFiltre() {
+            this.$emit('update:showFilter', !this.showFilter);
         }
     },
+
+    mounted() {
+        this.eventValue = this.searchValue;
+    }
 }
 
 </script>
