@@ -17,21 +17,34 @@
 
 <template>
 
-    <div class=" d-flex">
-        <div class="input-group m-2">
-            <!-- <input  type="text" class="form-control" placeholder="rechercher" :value="searchValue" @input="eventValue = $event.target.value"> -->
-            <input  type="text" class="form-control" placeholder="rechercher" v-model="eventValue">
+    <form @submit.prevent="search()">
+        <div class="input-group p-2">
+            <input  type="text" class="form-control" placeholder="rechercher" v-model="localValue">
 
-            <button class="btn btn-outline-secondary input-group-text" type="submit" @click="updateSearchValue()">
-                <i class="bi bi-search"></i>
+            <button class="btn btn-outline-secondary input-group-text" type="submit" @click="search()" :disabled="pending">
+                <span class="spinner-border spinner-border-sm" role="status" v-if="pending"></span>
+                <i class="bi bi-search" v-else></i>
             </button>
 
-            <button v-if="filterOptions" @click.prevent="eventFiltre()" type="button" class="btn input-group-text" :class="filterButtonClass" >
+            <button v-if="filterOptions" @click.prevent="toggleFilter()" type="button" class="btn input-group-text" :class="filterButtonClass" >
                 <i class="bi bi-funnel-fill"></i> 
                 <span v-if="nbFilterActive">{{nbFilterActive}}</span> 
             </button>
+
         </div>
-    </div>
+
+        <div v-if="showFilter && filterOptions">
+            <slot></slot>
+
+            <div class="text-center my-4">
+                <button class="btn btn-primary" type="submit" :disabled="pending">
+                    <span class="spinner-border spinner-border-sm" role="status" v-if="pending"></span>
+                    <i class="bi bi-check-lg" v-else></i>
+                    Appliquer
+                </button>
+            </div>
+        </div>
+    </form>
     
 </template>
 
@@ -51,16 +64,17 @@ export default {
         filterOptions: {
             type: Boolean,
             default: true
-        }
+        },
+        pending: Boolean
     },
 
     data() {
         return {
-            eventValue: null,
+            localValue: null,
         }
     },
 
-    emits: ['update:showFilter', 'update:searchValue'],
+    emits: ['update:showFilter', 'update:searchValue', 'search'],
 
     computed: {
         /**
@@ -89,26 +103,47 @@ export default {
         }
     },
 
+    watch: {
+        /**
+         * Envoie la nouvelle valeur à l'élément parent
+         * 
+         * @param {string} newVal       Nouvelle valeur de recherche
+         * 
+         * @event update:searchValue
+         */
+        localValue(newVal) {
+            this.$emit('update:searchValue', newVal);
+        }
+    },
+
     methods: {
         /**
-         * Renvoi searchValue pour Met a jour la variable au niveau du parent
+         * Affiche ou masque les filtres
          * 
-         * @event searchValue
+         * @event update:showFilter
          */
-        updateSearchValue() {
-            this.$emit('update:searchValue', this.eventValue);
+        toggleFilter() {
+            if (this.showFilter) {
+                this.search();
+            }
+            else {
+                this.$emit('update:showFilter', !this.showFilter);
+            }
         },
 
         /**
-         * Affichage du bouton de filtre
+         * Lance la commande de recherche
+         * 
+         * @event search
          */
-         eventFiltre() {
-            this.$emit('update:showFilter', !this.showFilter);
+        search() {
+            this.$emit('update:showFilter', false);
+            this.$emit('search');
         }
     },
 
     mounted() {
-        this.eventValue = this.searchValue;
+        this.localValue = this.searchValue;
     }
 }
 
