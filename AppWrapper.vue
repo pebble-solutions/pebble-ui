@@ -20,7 +20,7 @@
             :cfg-menu="cfgMenu"
             :cfg-slots="cfgSlots"
             :local_user="local_user"
-            :sidebar-menu="sidebarMenu"
+            :sidebar-menu="appMenu"
 
             @update-sidebar="updateSidebar"
             @menu-toggle="menu = !menu"
@@ -240,6 +240,23 @@ export default {
          */
         appVersion() {
             return packageInfo.version;
+        },
+
+        /**
+         * Retourne les informations du menu principal
+         * 
+         * @return {Array}
+         */
+        appMenu() {
+            if (this.sidebarMenu) {
+                return this.sidebarMenu;
+            }
+
+            if (this.cfg.appMenu) {
+                return this.cfg.appMenu;
+            }
+
+            return null;
         }
     },
 
