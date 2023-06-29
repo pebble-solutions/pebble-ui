@@ -452,10 +452,6 @@ export default {
     background-color:$theme-color;
 }
 
-.apps-menu-sidebar .app-label {
-    display:none;
-}
-
 .apps-menu-sidebar.active {
     width:100%;
     top:0px;
@@ -520,10 +516,28 @@ export default {
     padding:10px 0px;
     text-decoration: none;
     text-transform: capitalize;
+    position:relative;
+    border-radius: 6px;
+}
+
+.apps-menu-sidebar-item .app-label {
+    display: none;
+    position: absolute;
+    top:0px;
+    left:52px;
+    background-color:rgba(0,0,0,0.8);
+    padding:10px 12px;
+    white-space: nowrap;
+    border-radius: 0px 6px 6px 0px;
 }
 
 .apps-menu-sidebar-item:hover {
     text-decoration: none;
+    border-radius: 6px 0px 0px 6px;
+}
+
+.apps-menu-sidebar-item:hover .app-label {
+    display: block;
 }
 
 .apps-menu-sidebar-item .app-icon {
