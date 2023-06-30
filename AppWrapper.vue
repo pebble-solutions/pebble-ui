@@ -162,7 +162,8 @@ export default {
             licence: null,
             isMobile : false,
             env: null,
-            userModal: false
+            userModal: false,
+            appMenu: null
         }
     },
 
@@ -240,23 +241,6 @@ export default {
          */
         appVersion() {
             return packageInfo.version;
-        },
-
-        /**
-         * Retourne les informations du menu principal
-         * 
-         * @return {Array}
-         */
-        appMenu() {
-            if (this.sidebarMenu) {
-                return this.sidebarMenu;
-            }
-
-            if (this.cfg.appMenu) {
-                return this.cfg.appMenu;
-            }
-
-            return null;
         }
     },
 
@@ -327,6 +311,30 @@ export default {
                 return this.slotsOptions[slot].className ? this.slotsOptions[slot].className : '';
             }
             return '';
+        },
+
+        /**
+         * Retourne les éléments du menu d'application
+         * 
+         * @return {array}
+         */
+        getAppMenu() {
+            if (this.sidebarMenu) {
+                return this.sidebarMenu;
+            }
+
+            if (this.cfg.appMenu) {
+                return this.$app.cfg.appMenu;
+            }
+
+            return null;
+        },
+
+        /**
+         * Récupère les informations du menu
+         */
+        updateAppMenu() {
+            this.appMenu = this.getAppMenu();
         }
     },
     
@@ -344,6 +352,8 @@ export default {
         }
 
         this.resize();
+
+        this.updateAppMenu();
 
         window.addEventListener('resize', () => {
             this.resize();
@@ -382,6 +392,10 @@ export default {
         this.$app.addEventListener('authError', () => {
             this.pending.initAuth = false;
         });
+
+        this.$app.addEventListener('appMenuUpdated', () => {
+            this.updateAppMenu();
+        })
 
         this.$app.checkAuth();
 
