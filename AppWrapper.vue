@@ -323,7 +323,7 @@ export default {
                 return this.sidebarMenu;
             }
 
-            if (this.cfg.appMenu) {
+            if (this.$app.cfg.appMenu) {
                 return this.$app.cfg.appMenu;
             }
 
