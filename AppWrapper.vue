@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user && cfg.ppp !== 'public'" />
+    <LoginModal v-if="cfg.ppp !== 'public'" :display="!local_user" />
 
     <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" v-if="cfg.ppp == 'private'" />
 
@@ -464,9 +464,13 @@ export default {
     bottom:0px; 
     top:48px;
     border-top:1px solid darken($theme-color, 8%);
-    transition: width .3s, top .1s;
+    transition: width .2s, top .1s;
     z-index: 1030;
     background-color:$theme-color;
+}
+
+.apps-menu-sidebar:hover {
+    width: 280px;
 }
 
 .apps-menu-sidebar.active {
@@ -537,7 +541,7 @@ export default {
     border-radius: 6px;
 }
 
-.apps-menu-sidebar-item .app-label {
+.apps-menu-sidebar:not(.expand) .apps-menu-sidebar-item .app-label {
     display: none;
     position: absolute;
     top:0px;
@@ -546,6 +550,14 @@ export default {
     padding:10px 12px;
     white-space: nowrap;
     border-radius: 0px 6px 6px 0px;
+}
+
+.apps-menu-sidebar.expand .apps-menu-sidebar-item .app-label {
+    display: none;
+}
+
+.apps-menu-sidebar.expand:hover .apps-menu-sidebar-item .app-label {
+    display: inline;
 }
 
 .apps-menu-sidebar-item:hover {
