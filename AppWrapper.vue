@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user && !pending.initAuth && cfg.ppp !== 'public'" />
+    <LoginModal v-if="!local_user && cfg.ppp !== 'public'" />
 
     <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" v-if="cfg.ppp == 'private'" />
 
