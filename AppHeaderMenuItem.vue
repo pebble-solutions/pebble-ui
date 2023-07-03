@@ -11,7 +11,7 @@
 <template>
     <li class="apps-menu-sidebar-el">
         <router-link :to="item.href" v-slot="{href, navigate, isActive}" custom>
-            <a :href="href" @click="navigate" class="apps-menu-sidebar-item text-light rounded" :class="{'active': isActive}" :title="item.label">
+            <a :href="href" @click="navigate" class="apps-menu-sidebar-item text-light" :class="{'active': isActive}" :title="item.label">
                 <i :class="item.icon+' app-icon'"></i>
                 <span class="app-label">{{item.label}}</span>
             </a>

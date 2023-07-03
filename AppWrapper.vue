@@ -20,7 +20,7 @@
             :cfg-menu="cfgMenu"
             :cfg-slots="cfgSlots"
             :local_user="local_user"
-            :sidebar-menu="sidebarMenu"
+            :sidebar-menu="appMenu"
 
             @update-sidebar="updateSidebar"
             @menu-toggle="menu = !menu"
@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <LoginModal v-if="!local_user && !pending.initAuth && cfg.ppp !== 'public'" />
+    <LoginModal v-if="cfg.ppp !== 'public'" :display="!local_user" />
 
     <StorageModal :display="storageModal" @modal-hide="storageModal = false" @modal-show="storageModal = true" v-if="cfg.ppp == 'private'" />
 
@@ -162,7 +162,8 @@ export default {
             licence: null,
             isMobile : false,
             env: null,
-            userModal: false
+            userModal: false,
+            appMenu: null
         }
     },
 
@@ -310,6 +311,30 @@ export default {
                 return this.slotsOptions[slot].className ? this.slotsOptions[slot].className : '';
             }
             return '';
+        },
+
+        /**
+         * Retourne les éléments du menu d'application
+         * 
+         * @return {array}
+         */
+        getAppMenu() {
+            if (this.sidebarMenu) {
+                return this.sidebarMenu;
+            }
+
+            if (this.$app.cfg.appMenu) {
+                return this.$app.cfg.appMenu;
+            }
+
+            return null;
+        },
+
+        /**
+         * Récupère les informations du menu
+         */
+        updateAppMenu() {
+            this.appMenu = this.getAppMenu();
         }
     },
     
@@ -327,6 +352,8 @@ export default {
         }
 
         this.resize();
+
+        this.updateAppMenu();
 
         window.addEventListener('resize', () => {
             this.resize();
@@ -365,6 +392,10 @@ export default {
         this.$app.addEventListener('authError', () => {
             this.pending.initAuth = false;
         });
+
+        this.$app.addEventListener('appMenuUpdated', () => {
+            this.updateAppMenu();
+        })
 
         this.$app.checkAuth();
 
@@ -447,13 +478,13 @@ export default {
     bottom:0px; 
     top:48px;
     border-top:1px solid darken($theme-color, 8%);
-    transition: width .3s, top .1s;
+    transition: width .2s, top .1s;
     z-index: 1030;
     background-color:$theme-color;
 }
 
-.apps-menu-sidebar .app-label {
-    display:none;
+.apps-menu-sidebar:hover {
+    width: 280px;
 }
 
 .apps-menu-sidebar.active {
@@ -520,10 +551,36 @@ export default {
     padding:10px 0px;
     text-decoration: none;
     text-transform: capitalize;
+    position:relative;
+    border-radius: 6px;
+}
+
+.apps-menu-sidebar:not(.expand) .apps-menu-sidebar-item .app-label {
+    display: none;
+    position: absolute;
+    top:0px;
+    left:52px;
+    background-color:rgba(0,0,0,0.8);
+    padding:10px 12px;
+    white-space: nowrap;
+    border-radius: 0px 6px 6px 0px;
+}
+
+.apps-menu-sidebar.expand .apps-menu-sidebar-item .app-label {
+    display: none;
+}
+
+.apps-menu-sidebar.expand:hover .apps-menu-sidebar-item .app-label {
+    display: inline;
 }
 
 .apps-menu-sidebar-item:hover {
     text-decoration: none;
+    border-radius: 6px 0px 0px 6px;
+}
+
+.apps-menu-sidebar-item:hover .app-label {
+    display: block;
 }
 
 .apps-menu-sidebar-item .app-icon {

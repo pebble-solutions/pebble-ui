@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalTitle" aria-hidden="true">
+    <div class="modal" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalTitle" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
@@ -10,10 +10,15 @@
                     <UserImage :name="userDisplayName" class-name="user-image-lg" class-name-username="lead" display="full" :image-url="user.photoURL" v-if="user" />
 
                     <AlertMessage v-if="error" icon="bi bi-exclamation-circle-fill" variant="danger">{{error}}</AlertMessage>
-
-                    <LicenceSelector :licences="licences" v-if="view == 'licence'" @error="setError" />
-
-                    <LoginForm :display-error="false" @error="setError" v-else />
+                    
+                    <template v-if="inited">
+                        <LicenceSelector :licences="licences" v-if="view == 'licence'" @error="setError" />
+                        <LoginForm :display-error="false" @error="setError" v-else />
+                    </template>
+                    <div v-else class="d-flex justify-content-center align-items-center text-secondary">
+                        <span class="spinner-border" role="status"></span>
+                        <span class="ms-2 fs-5">Initialisation...</span>
+                    </div>
 
                     <div class="text-center mt-3 pt-3 mb-2">
                         <img src="@/components/pebble-ui/assets/pebble-dark-64.png" alt="Pebble logo" title="Pebble V" class="pebble-logo">
@@ -57,8 +62,23 @@ export default {
             user: null,
             error: null,
             env: null,
-            apiConfig: null
+            apiConfig: null,
+            inited: false
         };
+    },
+
+    watch: {
+        /**
+         * Le statut display est observé pour afficher ou masquer la boite modale.
+         */
+        display(val) {
+            if (val) {
+                this.modal.show();
+            }
+            else {
+                this.modal.hide();
+            }
+        }
     },
 
     computed: {
@@ -85,6 +105,8 @@ export default {
          * Initialise la vue en mode formulaire de connexion ou sélection de licence.
          */
         initView() {
+            this.inited = true;
+            
             if (this.user && this.licences.length) {
                 this.view = 'licence';
             }
@@ -108,7 +130,13 @@ export default {
 
     mounted() {
         this.modal = new bootstrap.Modal(document.getElementById("loginModal"));
-        this.modal.show();
+
+        if (this.display) {
+            this.modal.show();
+
+            const modalElement = document.getElementById("loginModal");
+            modalElement.classList.add("fade");
+        }
 
         this.user = this.$app.firebase_user;
         this.licences = this.$app.licences ? this.$app.licences : [];
