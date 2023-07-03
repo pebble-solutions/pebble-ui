@@ -55,8 +55,6 @@ export default {
     name: 'searchBar',
 
     props: {
-        /** v-model props */
-        showFilter: Boolean,
         searchValue: String,
 
         /**basic props */
@@ -71,10 +69,11 @@ export default {
     data() {
         return {
             localValue: null,
+            showFilter: false
         }
     },
 
-    emits: ['update:showFilter', 'update:searchValue', 'search'],
+    emits: ['update:searchValue', 'search', 'filter-show', 'filter-hide'],
 
     computed: {
         /**
@@ -113,6 +112,23 @@ export default {
          */
         localValue(newVal) {
             this.$emit('update:searchValue', newVal);
+        },
+
+       /**
+        * Déclenche un événement filter-show ou filter-hide
+        * 
+        * @param {bool} newVal 
+        * 
+        * @event filter-show
+        * @event filter-hide
+        */
+        showFilter(newVal) {
+            if (newVal) {
+                this.$emit('filter-show');
+            }
+            else {
+                this.$emit('filter-hide');
+            }
         }
     },
 
@@ -127,7 +143,7 @@ export default {
                 this.search();
             }
             else {
-                this.$emit('update:showFilter', !this.showFilter);
+                this.showFilter = !this.showFilter;
             }
         },
 
@@ -137,8 +153,8 @@ export default {
          * @event search
          */
         search() {
-            this.$emit('update:showFilter', false);
             this.$emit('search');
+            this.showFilter = false;
         }
     },
 
