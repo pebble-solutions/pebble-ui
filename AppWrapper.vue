@@ -483,7 +483,7 @@ export default {
     background-color:$theme-color;
 }
 
-.apps-menu-sidebar:hover {
+.apps-menu-sidebar.expand:hover {
     width: 280px;
 }
 

@@ -25,7 +25,7 @@
             {{cfg.moduleLabel}}
         </span>
 
-        <div class="apps-menu-sidebar expand" v-if="cfg.aside && !isMobile">
+        <div class="apps-menu-sidebar" :class="sidebarClass" v-if="cfg.aside && !isMobile">
 
             <ul class="apps-menu-sidebar-items" v-if="sidebarMenu">
                 <AppHeaderMenuItem v-for="item in sidebarMenu" :item="item" :key="item.key" />
@@ -178,6 +178,18 @@ export default {
             }
 
             return true;
+        },
+
+        /**
+         * Retourne la classe CSS de la sidebar.
+         * 
+         * Si le nb d'items dans le menu est >= 1, alors le menu peux s'étendre. 
+         * Sinon, la sidebar restera fixe.
+         * 
+         * @return {string}
+         */
+        sidebarClass() {
+            return this.sidebarMenu?.length ? "expand" : "";
         }
 
 
