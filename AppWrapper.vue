@@ -737,4 +737,28 @@ export default {
     filter: blur(8px);
     -webkit-filter: blur(8px);
 }
+
+.absolute-workspace {
+    position: absolute;
+    top: 49px;
+    left: 0px;
+    bottom:0px;
+    right: 0px;
+    overflow: auto;
+    z-index: 1;
+}
+
+@media (min-width: 579px) {
+    .absolute-workspace {
+        left: 52px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .absolute-workspace {
+        left: 402px;
+    }
+}
+
+
 </style>
