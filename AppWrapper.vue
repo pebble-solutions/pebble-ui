@@ -550,9 +550,10 @@ export default {
     display:flex;
     padding:10px 0px;
     text-decoration: none;
-    text-transform: capitalize;
     position:relative;
     border-radius: 6px;
+    white-space: nowrap;
+    overflow:hidden;
 }
 
 .apps-menu-sidebar:not(.expand) .apps-menu-sidebar-item .app-label {
@@ -567,11 +568,13 @@ export default {
 }
 
 .apps-menu-sidebar.expand .apps-menu-sidebar-item .app-label {
-    display: none;
+    opacity: 0;
+    transition: opacity .3s;
 }
 
 .apps-menu-sidebar.expand:hover .apps-menu-sidebar-item .app-label {
     display: inline;
+    opacity: 1;
 }
 
 .apps-menu-sidebar-item:hover {
@@ -586,6 +589,7 @@ export default {
 .apps-menu-sidebar-item .app-icon {
     text-align: center;
     width:52px;
+    min-width:52px;
 }
 
 .apps-menu-sidebar-item:hover,
