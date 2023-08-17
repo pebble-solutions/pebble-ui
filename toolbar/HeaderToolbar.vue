@@ -9,7 +9,7 @@
 export default {
     methods: {
         /**
-         * Gère les proportions pour l'affichage de la header toolbar
+         * Gère les proportions pour l'affichage de la header toolbar !
          */
         resize() {
             let header = this.$refs.headerToolbar;
