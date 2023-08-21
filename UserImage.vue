@@ -24,7 +24,7 @@
     min-width: 32px; min-height: 32px;
     display: block;
     text-align: center;
-    margin: auto;
+    
 }
 
 .user-image-xs {
